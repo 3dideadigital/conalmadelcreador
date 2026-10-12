@@ -1,0 +1,13 @@
+{
+  "name": "conalmadelcreador-reels",
+  "private": true,
+  "description": "Generador de reels animados para Instagram de Con Alma del Creador",
+  "scripts": {
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/montserrat": "^5.3.0",
+    "playwright": "^1.56.1"
+  }
+}

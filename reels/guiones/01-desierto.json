@@ -1,0 +1,60 @@
+{
+  "titulo": "¿Por qué Dios te lleva al desierto?",
+  "plantilla": "desierto",
+  "duracion": 18,
+  "portada": 1.5,
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 3.4,
+      "visibleDesdeInicio": true,
+      "lineas": [
+        { "texto": "¿Por qué Dios", "estilo": "grande" },
+        { "texto": "te lleva", "estilo": "grande" },
+        { "texto": "al desierto?", "estilo": "oroGrande" }
+      ]
+    },
+    {
+      "inicio": 3.4,
+      "fin": 6.6,
+      "lineas": [
+        { "texto": "No es un castigo.", "estilo": "normal" },
+        { "texto": "Es una preparación.", "estilo": "oro", "en": 1.0 }
+      ]
+    },
+    {
+      "inicio": 6.6,
+      "fin": 11.0,
+      "lineas": [
+        { "texto": "El desierto", "estilo": "normal" },
+        { "texto": "tiene una función:", "estilo": "normal" },
+        { "texto": "enseñarte a confiar", "estilo": "oro", "en": 1.1 },
+        { "texto": "cuando ya no tienes", "estilo": "normal", "en": 2.0 },
+        { "texto": "otra opción.", "estilo": "normal", "en": 2.3 }
+      ]
+    },
+    {
+      "inicio": 11.0,
+      "fin": 14.8,
+      "lineas": [
+        { "texto": "«La llevaré al desierto,", "estilo": "cita" },
+        { "texto": "y hablaré", "estilo": "cita" },
+        { "texto": "a su corazón.»", "estilo": "cita" },
+        { "texto": "OSEAS 2:14", "estilo": "referencia", "en": 1.2 }
+      ]
+    },
+    {
+      "inicio": 14.8,
+      "fin": 18,
+      "tipo": "cierre",
+      "lema": "MANTENTE CONECTADO",
+      "nombre": "Con Alma del Creador",
+      "cta": ["Envíaselo a quien esté", "atravesando su desierto"]
+    }
+  ],
+  "publicacion": {
+    "texto": "¿Sientes que estás en un desierto? 🏜️\n\nNo es un castigo. A veces Dios nos lleva a lugares donde ya no queda nada más… para que aprendamos a confiar solo en Él.\n\n«Pero he aquí que yo la atraeré y la llevaré al desierto, y hablaré a su corazón.» — Oseas 2:14 (RVR1960)\n\nSi alguien que quieres está pasando por su desierto, envíaselo. Puede ser la señal que necesita hoy. 📶✝️\n\n#versiculodeldia #fe #confiaendios #palabradedios #cristianos #mantenteconectado",
+    "musica": "Elegir en la biblioteca de Instagram una pieza instrumental suave (piano o ambiental). Buscar: \"worship piano\", \"ambient piano\" o \"cinematic hope\".",
+    "comentarioFijado": "¿Qué te enseñó Dios en tu último desierto? 👇"
+  }
+}
