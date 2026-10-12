@@ -6,6 +6,41 @@
 
 ---
 
+## 0. Diagnóstico de la cuenta con datos reales (octubre 2026)
+
+**Situación:** 17 publicaciones · 10 seguidores · 36 seguidos · enlace a Etsy · biografía vacía · sin historias destacadas.
+
+### Lo que dicen las estadísticas de las 3 últimas publicaciones
+
+| Publicación | Formato | Visualizaciones | Cuentas alcanzadas | % no seguidores | Me gusta | Guardados | Compartidos | Nuevos seguidores |
+|---|---|---|---|---|---|---|---|---|
+| "¿Por qué Dios lleva a las personas al desierto?" | Reel animado **horizontal** | 447 | 110 | 91 % | 5 | 1 | 0 | 0 |
+| "La lucha es en tu mente" (logo cruz-wifi) | Reel animado | 468 | 83 | 83 % | 3 | 0 | 0 | 0 |
+| Llavero "Buscadme y viviréis" | Foto fija | 28 | 10 | 25 % | 3 | 0 | 0 | 0 |
+
+### Conclusiones
+
+1. **Tu intuición era correcta: las animaciones sí llegan a gente nueva.** Los reels animados llegan a 8–11 veces más cuentas que la foto, y casi todas son personas que no os siguen. La foto de producto prácticamente solo la vieron los seguidores.
+2. **El problema no es llegar, sino convertir.** Unas 200 personas nuevas vieron las animaciones y ninguna la compartió, ninguna siguió la cuenta y nadie visitó el perfil. Por eso Instagram deja de mostrarlas a más gente después de las primeras ~100 cuentas: no recibe señales de que el contenido "enganche".
+3. **Fallos concretos de las animaciones:**
+   - **El reel del desierto es horizontal (16:9).** En Reels se ve como una franja pequeña con bandas negras arriba y abajo, ocupando un tercio de la pantalla. Esto hunde el tiempo de visualización. **Siempre vertical 9:16 (1080×1920).**
+   - **"La lucha es en tu mente" empieza con el logo.** El primer segundo es lo que decide si la gente se queda o pasa. Un logo no despierta curiosidad: hay que abrir con una pregunta o una situación ("¿Te cuesta dormir porque no paras de pensar?") y dejar el logo para el final.
+   - **Mensajes demasiado genéricos.** "La lucha es en tu mente" es verdad, pero no le habla a nadie en concreto. "Para ti que hoy no puedes apagar la cabeza" sí se envía a un amigo.
+   - **No piden nada.** Ninguna invitación a guardar, enviar o comentar.
+   - **En la cuadrícula del perfil se corta el texto** de la portada del desierto ("Porque el desierto…" sale cortado por los lados). Las portadas deben tener el texto en la zona central (la cuadrícula muestra la parte central en formato 3:4).
+4. **El perfil no convence a quien llega.** Si alguien entra después de ver un reel, encuentra un nombre sin palabras clave, ninguna biografía que explique qué es esto ni por qué seguirlo y una cuadrícula con estilos muy distintos (foto de estudio, fondo beige, fondo negro y dorado, vídeo en el taller). Hay que arreglarlo antes de intentar crecer (ver sección 8).
+5. **La foto del llavero es bonita, pero el formato de foto fija ya casi no se distribuye.** El mismo llavero en un reel (alguien lo coge, lo escanea y empieza a sonar la canción) habría llegado a mucha más gente.
+6. **Tienes un tesoro sin explotar: tus reels del taller.** Frases como *"Le pedí una idea a Dios y acabé fabricando esto"* son ganchos excelentes: una historia personal y un "¿qué será?" en una sola frase. Los llaveros impresos en 3D (*1º Dios — Mateo 6:33*, *Seguir a Cristo*) con el QR integrado son muy visuales. Hay que revisar sus estadísticas: si han funcionado mejor que las animaciones, son la otra mitad de la estrategia.
+
+### La fórmula que proponemos a partir de estos datos
+
+> **Animación vertical con gancho en el primer segundo → mensaje dirigido a una situación concreta → cierre con el logo y una invitación a compartir.**
+> Y, una o dos veces por semana, **tu taller**: la historia de cómo nace cada pieza.
+
+El éxito de cada reel no se medirá por las visualizaciones (eso ya lo conseguimos), sino por **compartidos, guardados y seguidores nuevos**.
+
+---
+
 ## 1. La idea central: la "conexión" es vuestro idioma
 
 Tenéis algo que la mayoría de cuentas cristianas no tienen: **una metáfora visual clarísima**. La cruz-wifi permite hablar de fe con el idioma del móvil, que es el que usa la gente cada día. Todo el canal debería girar en torno a ese idioma:
@@ -167,15 +202,19 @@ Así, en una sesión a la semana se dejan preparadas todas las animaciones de lo
 
 ## 8. Optimizar el perfil (hacer hoy)
 
-- **Nombre** (el campo que sale en las búsquedas): `Con Alma del Creador | Camisetas y regalos cristianos`
-- **Biografía** (propuesta):
+Ahora mismo el nombre es "con Alma del CREADOR", la biografía está vacía y solo aparece el enlace a Etsy.
+
+- **Nombre** (el campo que sale en las búsquedas; ahora no tiene palabras clave): `Con Alma del Creador | Regalos cristianos`
+- **Biografía** (propuesta, hoy está vacía):
   ```
   📶 Mantente conectado a Dios
-  ✝️ Camisetas, llaveros QR y letras con versículos
-  🎧 Escanea tu llavero y escucha música que alimenta el alma
-  👇 Tienda y playlist
+  ✝️ Llaveros con QR musical, letras y camisetas con versículos
+  🛠️ Hecho a mano (y con fe) en mi taller
+  🛒 Pedidos en Etsy 👇
   ```
-- **Enlace**: una página con tienda + playlist + WhatsApp para pedidos.
+- **Enlace**: mantener Etsy. Cuando haya más cosas, una página de enlaces con Etsy + playlist + WhatsApp para pedidos.
+- **Seguidos**: seguir y comentar con sentido cada día (10–15 minutos) a cuentas cristianas, artistas de música cristiana y parroquias. Con 10 seguidores, esta interacción manual es lo que más acelera el principio.
+- **Coherencia visual**: elegir **un** estilo para las animaciones (recomendado: el negro y dorado del reel del desierto, que es el más elegante y combina con el logo) y mantenerlo siempre.
 - **Historias destacadas**: Tienda · Llaveros QR · Playlist · Hecho con alma · Vuestras fotos · Regalos comunión · Envíos.
 - **Publicaciones fijadas (3)**: 1) quiénes somos y por qué la cruz-wifi, 2) el reel con más alcance, 3) el llavero QR en acción.
 
@@ -258,19 +297,20 @@ Cada 2 semanas: mirar los 3 reels con más envíos y **hacer más de lo que func
 
 ## 12. Hoja de ruta de 90 días
 
-**Días 1–30 · Base y prueba**
-- Optimizar el perfil (sección 8).
+**Días 1–30 · Base y prueba** (objetivo: pasar de 10 a ~100 seguidores)
+- Optimizar el perfil (sección 8) **antes** de publicar nada más.
+- Rehacer el reel del desierto en vertical (no resubirlo igual: cambiar el gancho y el montaje).
 - Crear 4–5 plantillas de animación y el sistema de producción automática.
 - Publicar con constancia el calendario de la sección 5.
 - Probar los 10 formatos de animación y ver cuáles se comparten más.
 
-**Días 31–60 · Comunidad**
+**Días 31–60 · Comunidad** (objetivo: ~250 seguidores, primeros compartidos de forma habitual)
 - Lanzar la palabra clave por mensaje directo + fondo de pantalla gratis.
 - Primeras 2–3 colaboraciones (artistas de la playlist, una parroquia o grupo juvenil).
 - Empezar los jueves de oración y el repost de clientes.
 - Primer vídeo contando la historia del proyecto.
 
-**Días 61–90 · Escalar y vender**
+**Días 61–90 · Escalar y vender** (objetivo: ~500 seguidores y primeras ventas en Etsy desde Instagram)
 - Quedarse con los 3–4 formatos ganadores y producirlos en serie.
 - Campaña de Adviento y Navidad (empezar a mediados de noviembre): "Regala conexión".
 - Sorteo de Navidad con colaboración.
@@ -289,4 +329,4 @@ Cada 2 semanas: mirar los 3 reels con más envíos y **hacer más de lo que func
 
 ---
 
-*Nota: este plan se ha preparado sin poder acceder al perfil de Instagram (no hay acceso desde este entorno). Para afinarlo, conviene revisar las estadísticas reales de las últimas publicaciones —especialmente las dos animaciones— y comparar sus envíos, guardados y alcance con las publicaciones de producto.*
+*Nota: el diagnóstico (sección 0) se basa en capturas del perfil y de las estadísticas de las 3 últimas publicaciones (octubre 2026). Pendiente: revisar las estadísticas de los reels del taller ("Le pedí una idea a Dios…", "Aquí os muestro mi segundo llavero musical…") y el tiempo medio de visualización de cada reel para compararlos con las animaciones.*
