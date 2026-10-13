@@ -1,0 +1,267 @@
+{
+  "titulo": "Batería espiritual",
+  "plantilla": "bateria",
+  "duracion": 18,
+  "portada": 1.0,
+  "bateria": {
+    "etiqueta": "BATERÍA ESPIRITUAL",
+    "niveles": [
+      [
+        0,
+        3
+      ],
+      [
+        3.9,
+        2
+      ],
+      [
+        4.6,
+        1
+      ]
+    ],
+    "conexion": 6.6,
+    "cargaInicio": 8.4,
+    "cargaFin": 12.4,
+    "salida": 14.0
+  },
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 3.2,
+      "y": 560,
+      "visibleDesdeInicio": true,
+      "lineas": [
+        {
+          "texto": "¿Tu alma está",
+          "estilo": "grande"
+        },
+        {
+          "texto": "al 3 %?",
+          "estilo": "oroGrande"
+        }
+      ]
+    },
+    {
+      "inicio": 3.2,
+      "fin": 6.6,
+      "y": 540,
+      "lineas": [
+        {
+          "texto": "Cansancio.",
+          "estilo": "normal",
+          "en": 0
+        },
+        {
+          "texto": "Preocupaciones.",
+          "estilo": "normal",
+          "en": 0.7
+        },
+        {
+          "texto": "Demasiado ruido.",
+          "estilo": "normal",
+          "en": 1.4
+        }
+      ]
+    },
+    {
+      "inicio": 6.6,
+      "fin": 9.6,
+      "y": 1230,
+      "lineas": [
+        {
+          "texto": "Conéctate",
+          "estilo": "normal",
+          "en": 1.5
+        },
+        {
+          "texto": "a la fuente.",
+          "estilo": "oro",
+          "en": 1.8
+        }
+      ]
+    },
+    {
+      "inicio": 9.6,
+      "fin": 13.8,
+      "y": 1230,
+      "lineas": [
+        {
+          "texto": "«Los que esperan a Jehová",
+          "estilo": "cita"
+        },
+        {
+          "texto": "tendrán nuevas fuerzas.»",
+          "estilo": "cita"
+        },
+        {
+          "texto": "ISAÍAS 40:31",
+          "estilo": "referencia",
+          "en": 1.4
+        }
+      ]
+    },
+    {
+      "inicio": 14.0,
+      "fin": 18,
+      "tipo": "cierre",
+      "lema": "MANTENTE CONECTADO",
+      "nombre": "Con Alma del Creador",
+      "cta": [
+        "Envíaselo a quien",
+        "tenga la batería baja"
+      ]
+    }
+  ],
+  "musica": {
+    "semilla": 11,
+    "pasoPiano": 0.85,
+    "acordes": [
+      {
+        "en": 0,
+        "notas": [
+          "E2",
+          "B3",
+          "E4",
+          "G4",
+          "B4",
+          "F#5"
+        ]
+      },
+      {
+        "en": 3.2,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "B4"
+        ]
+      },
+      {
+        "en": 6.6,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "C4",
+          "E4",
+          "G4"
+        ]
+      },
+      {
+        "en": 8.4,
+        "notas": [
+          "F#2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "D5"
+        ],
+        "patron": "ascendente",
+        "paso": 0.26
+      },
+      {
+        "en": 10.0,
+        "notas": [
+          "E2",
+          "B3",
+          "E4",
+          "G4",
+          "B4",
+          "E5"
+        ],
+        "patron": "ascendente",
+        "paso": 0.23
+      },
+      {
+        "en": 11.3,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "C5"
+        ],
+        "patron": "ascendente",
+        "paso": 0.2
+      },
+      {
+        "en": 12.4,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 14.0,
+        "notas": [
+          "G2",
+          "D3",
+          "B3",
+          "D4",
+          "G4",
+          "A4"
+        ]
+      }
+    ],
+    "campanas": [
+      {
+        "en": 0.05,
+        "nota": "E5",
+        "ganancia": 0.07
+      },
+      {
+        "en": 0.32,
+        "nota": "C5",
+        "ganancia": 0.07
+      },
+      {
+        "en": 7.55,
+        "nota": "B5",
+        "pan": -0.3
+      },
+      {
+        "en": 7.82,
+        "nota": "D6",
+        "pan": 0.0
+      },
+      {
+        "en": 8.08,
+        "nota": "G6",
+        "pan": 0.3
+      },
+      {
+        "en": 12.4,
+        "nota": "D6",
+        "ganancia": 0.15
+      },
+      {
+        "en": 14.95,
+        "nota": "G5",
+        "pan": -0.3
+      },
+      {
+        "en": 15.22,
+        "nota": "B5",
+        "pan": 0.0
+      },
+      {
+        "en": 15.48,
+        "nota": "D6",
+        "pan": 0.3
+      }
+    ]
+  },
+  "publicacion": {
+    "texto": "¿Tu batería espiritual está al 3 %? 🔋\n\nCansancio, preocupaciones, demasiado ruido… A veces vamos por la vida en reserva, intentando seguir solo con nuestras fuerzas.\n\nPero hay una fuente que nunca se agota. 📶✝️\n\n«Pero los que esperan a Jehová tendrán nuevas fuerzas; levantarán alas como las águilas; correrán, y no se cansarán; caminarán, y no se fatigarán.» — Isaías 40:31 (RVR1960)\n\nEnvíaselo a quien tenga hoy la batería baja. 🤍\n\n#versiculodeldia #fe #nuevasfuerzas #palabradedios #cristianos #mantenteconectado",
+    "musica": "El vídeo ya lleva música original compuesta para este reel (sin derechos de autor). Si se prefiere usar una canción de la biblioteca de Instagram, bajar a 0 el volumen del audio original al subirlo.",
+    "comentarioFijado": "¿A qué porcentaje está hoy tu batería? 👇 Te leemos y oramos por ti."
+  }
+}

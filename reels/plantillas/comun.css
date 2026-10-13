@@ -1,0 +1,13 @@
+/* Tipografías y lienzo comunes a todas las plantillas. */
+@font-face { font-family: "Cormorant"; font-weight: 500; font-style: normal;
+  src: url("../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant"; font-weight: 600; font-style: normal;
+  src: url("../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant"; font-weight: 500; font-style: italic;
+  src: url("../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-italic.woff2") format("woff2"); }
+@font-face { font-family: "Montserrat"; font-weight: 500; font-style: normal;
+  src: url("../node_modules/@fontsource/montserrat/files/montserrat-latin-500-normal.woff2") format("woff2"); }
+html, body { margin: 0; background: #000; }
+body { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+canvas { display: block; height: 100vh; width: auto; max-width: 100vw; }
+body.render canvas { height: 1920px; width: 1080px; max-width: none; }

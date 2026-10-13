@@ -5,7 +5,7 @@ Fábrica de reels verticales (1080×1920, 30 fps) para Instagram.
 ## Cómo funciona
 
 1. **Guion** (`guiones/*.json`): textos de cada escena, tiempos, estilo de cada línea y el texto de la publicación.
-2. **Plantilla** (`plantillas/*.html`): el diseño animado (fondo, tipografías, logo cruz-wifi).
+2. **Plantilla** (`plantillas/*.html`): el diseño animado de cada formato. Las piezas de marca comunes (tipografías, logo cruz-wifi, textos, cierre) están en `plantillas/comun.js` y `plantillas/comun.css`, así todos los reels mantienen la misma identidad.
 3. **Render** (`render.mjs`): abre la plantilla en un navegador, la graba fotograma a fotograma y crea el vídeo.
 4. **Música** (`musica/generar.py`): compone una banda sonora original (pad, piano, bajo y campanas) con los acordes y momentos que indica el guion en su apartado `musica`. Es música propia, sin derechos de autor.
 
@@ -21,10 +21,17 @@ Resultado en `salida/<guion>/`:
 - `portada.png` — la portada del reel.
 - `publicacion.txt` — texto de la publicación, sugerencia de música y comentario para fijar.
 
-## Estilos de línea disponibles (plantilla "desierto")
+## Plantillas
+
+| Plantilla | Reel de ejemplo | Idea |
+|---|---|---|
+| `desierto` | `guiones/01-desierto.json` | Noche en el desierto con un amanecer que sube durante el reel. |
+| `bateria` | `guiones/02-bateria.json` | Batería espiritual al 3 % que se conecta al logo y se carga al 100 %. Los tiempos van en el apartado `bateria` del guion. |
+
+## Estilos de línea disponibles
 
 `grande`, `oroGrande`, `normal`, `oro`, `cita`, `referencia`.
-Cada línea puede llevar `"en": segundos` para aparecer en un momento concreto de su escena.
+Cada línea puede llevar `"en": segundos` para aparecer en un momento concreto de su escena, y cada escena `"y"` para colocar su bloque de texto en vertical (por defecto, 840).
 
 ## Al subirlo a Instagram
 
@@ -35,4 +42,5 @@ Cada línea puede llevar `"en": segundos` para aparecer en un momento concreto d
 ## Vista previa en el navegador
 
 Servir esta carpeta (por ejemplo `npx http-server .`) y abrir
-`plantillas/desierto.html?guion=../guiones/01-desierto.json`.
+`plantillas/desierto.html?guion=../guiones/01-desierto.json`
+(o `plantillas/bateria.html?guion=../guiones/02-bateria.json`).

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plantilla batería — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body>
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Plantilla "batería espiritual": una batería al borde de agotarse que
+// parpadea en rojo; el logo cruz-wifi aparece, se "conecta" con un haz de
+// luz y la batería se carga hasta el 100 % mientras aparece el versículo.
+// Uso en el navegador: bateria.html?guion=../guiones/02-bateria.json
+// Los tiempos de la batería van en guion.bateria; los textos, en escenas.
+
+const BAT = { cx: 540, cy: 880, w: 520, h: 240, radio: 44, borde: 10 };
+const LOGO = { arriba: 300, alto: 250 };
+const ROJO = [229, 72, 77];
+
+const azar = aleatorio(21);
+const ESTRELLAS = Array.from({ length: 110 }, () => ({
+  x: azar() * W, y: azar() * H, r: 0.7 + azar() * 1.7,
+  fase: azar() * Math.PI * 2, vel: 0.5 + azar() * 1.5,
+}));
+
+const mezclar = (a, b, k) => a.map((v, i) => Math.round(v + (b[i] - v) * k));
+function colorNivel(n) {
+  const tramos = [[0, ROJO], [15, ROJO], [40, [240, 160, 60]], [75, [212, 175, 106]], [100, [232, 196, 122]]];
+  for (let i = 1; i < tramos.length; i++) {
+    const [n0, c0] = tramos[i - 1], [n1, c1] = tramos[i];
+    if (n <= n1) return mezclar(c0, c1, (n - n0) / (n1 - n0));
+  }
+  return tramos[tramos.length - 1][1];
+}
+
+function rectRedondeado(x, y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, r);
+}
+
+// --- estado de la batería en el instante t -------------------------------
+function estadoBateria(b, t) {
+  let nivel = b.niveles[0][1];
+  for (const [desde, n] of b.niveles) if (t >= desde) nivel = n;
+  const k = suave((t - b.cargaInicio) / (b.cargaFin - b.cargaInicio));
+  if (t >= b.cargaInicio) nivel = nivel + (100 - nivel) * k;
+  return {
+    nivel,
+    alerta: 1 - suave((t - (b.cargaInicio - 0.3)) / 0.5),   // rojo parpadeante → blanco
+    rayo: salida((t - (b.cargaInicio - 0.2)) / 0.4),          // icono de carga
+    lleno: t >= b.cargaFin ? Math.exp(-(t - b.cargaFin) * 2.2) : 0, // destello al llegar al 100 %
+    alfa: 1 - suave((t - b.salida + 0.45) / 0.45),
+  };
+}
+
+// --- fondo ----------------------------------------------------------------
+function dibujarFondo(t, est) {
+  ctx.fillStyle = "#060504";
+  ctx.fillRect(0, 0, W, H);
+  const [r, g, b] = colorNivel(est.nivel);
+  const fuerza = (0.18 + 0.32 * est.nivel / 100 + 0.25 * est.lleno) * est.alfa;
+  let grad = ctx.createRadialGradient(BAT.cx, BAT.cy, 0, BAT.cx, BAT.cy, 1000);
+  grad.addColorStop(0, `rgba(${r},${g},${b},${fuerza})`);
+  grad.addColorStop(0.45, `rgba(${r},${g},${b},${fuerza * 0.25})`);
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  for (const e of ESTRELLAS) {
+    const brillo = 0.3 + 0.7 * (0.5 + 0.5 * Math.sin(t * e.vel + e.fase));
+    ctx.fillStyle = `rgba(255,244,220,${brillo * 0.45})`;
+    ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2); ctx.fill();
+  }
+  grad = ctx.createRadialGradient(540, 960, 520, 540, 960, 1300);
+  grad.addColorStop(0, "rgba(0,0,0,0)");
+  grad.addColorStop(1, "rgba(0,0,0,0.6)");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// --- batería --------------------------------------------------------------
+function dibujarRayo(x, y, s) {
+  ctx.beginPath();
+  ctx.moveTo(x + 0.15 * s, y - 0.5 * s);
+  ctx.lineTo(x - 0.28 * s, y + 0.08 * s);
+  ctx.lineTo(x - 0.02 * s, y + 0.08 * s);
+  ctx.lineTo(x - 0.15 * s, y + 0.5 * s);
+  ctx.lineTo(x + 0.28 * s, y - 0.1 * s);
+  ctx.lineTo(x + 0.02 * s, y - 0.1 * s);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function dibujarBateria(t, est) {
+  const { cx, cy, w, h, radio, borde } = BAT;
+  const x = cx - w / 2, y = cy - h / 2;
+  const parpadeo = 0.45 + 0.55 * (0.5 + 0.5 * Math.cos(t * Math.PI * 2 * 1.1));
+  const colorBorde = mezclar([244, 239, 230], ROJO, est.alerta);
+  const alfaBorde = (1 - est.alerta) * 0.92 + est.alerta * parpadeo;
+  const [r, g, b] = colorNivel(est.nivel);
+
+  ctx.save();
+  ctx.globalAlpha = est.alfa;
+
+  // Carcasa y polo.
+  ctx.strokeStyle = `rgba(${colorBorde},${alfaBorde})`;
+  ctx.fillStyle = `rgba(${colorBorde},${alfaBorde})`;
+  ctx.lineWidth = borde;
+  rectRedondeado(x, y, w, h, radio); ctx.stroke();
+  rectRedondeado(x + w + 10, cy - 48, 26, 96, 10); ctx.fill();
+
+  // Carga.
+  const pad = 22;
+  const anchoMax = w - pad * 2;
+  const ancho = Math.max(10, anchoMax * est.nivel / 100);
+  const zona = [x + pad, y + pad, ancho, h - pad * 2];
+  ctx.shadowColor = `rgba(${r},${g},${b},${0.6 + 0.4 * est.lleno})`;
+  ctx.shadowBlur = 30 + 60 * est.lleno;
+  ctx.fillStyle = `rgba(${r},${g},${b},${est.alerta > 0.5 ? 0.5 + 0.5 * parpadeo : 1})`;
+  rectRedondeado(...zona, radio - pad / 2); ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Porcentaje (y rayo al cargar). Se pinta dos veces: claro sobre el fondo
+  // y oscuro recortado a la zona cargada, así el texto cambia de color justo
+  // donde lo alcanza la carga.
+  const texto = `${Math.round(est.nivel)} %`;
+  const desplazamiento = 42 * est.rayo;
+  const contenido = color => {
+    ctx.fillStyle = color;
+    ctx.font = "500 96px Montserrat";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(texto, cx + desplazamiento, cy + 4);
+    if (est.rayo > 0) {
+      ctx.globalAlpha = est.alfa * est.rayo;
+      const ancho = ctx.measureText(texto).width;
+      dibujarRayo(cx + desplazamiento - ancho / 2 - 52, cy, 86);
+      ctx.globalAlpha = est.alfa;
+    }
+  };
+  contenido(BLANCO);
+  ctx.save();
+  rectRedondeado(...zona, radio - pad / 2); ctx.clip();
+  contenido("#1a1209");
+  ctx.restore();
+  ctx.restore();
+}
+
+// --- conexión: logo + haz de luz hacia la batería -------------------------
+function dibujarConexion(b, t, alfa) {
+  if (t < b.conexion) return;
+  const p = (t - b.conexion) / 1.9;
+  dibujarLogo(540, LOGO.arriba, LOGO.alto, p, alfa * salida((t - b.conexion) / 0.5));
+  // Haz de luz que baja del pie de la cruz hasta la batería.
+  const desde = LOGO.arriba + LOGO.alto + 18, hasta = BAT.cy - BAT.h / 2 - 14;
+  const pHaz = salida((t - (b.cargaInicio - 0.35)) / 0.35);
+  if (pHaz <= 0) return;
+  const fin = desde + (hasta - desde) * pHaz;
+  const intensidad = t < b.cargaFin ? 1 : 0.45 + 0.55 * Math.exp(-(t - b.cargaFin) * 1.5);
+  ctx.save();
+  ctx.globalAlpha = alfa * intensidad;
+  const grad = ctx.createLinearGradient(0, desde, 0, hasta);
+  grad.addColorStop(0, `rgba(${ORO_RGB},0.2)`);
+  grad.addColorStop(1, `rgba(${ORO_RGB},0.95)`);
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 6;
+  ctx.lineCap = "round";
+  ctx.shadowColor = `rgba(${ORO_RGB},0.9)`;
+  ctx.shadowBlur = 24;
+  ctx.beginPath(); ctx.moveTo(540, desde); ctx.lineTo(540, fin); ctx.stroke();
+  // Pulsos de energía bajando por el haz mientras carga.
+  if (pHaz >= 1 && t < b.cargaFin + 0.6) {
+    ctx.fillStyle = "rgba(255,236,190,0.95)";
+    for (let i = 0; i < 4; i++) {
+      const f = ((t - b.cargaInicio) * 1.6 + i / 4) % 1;
+      ctx.beginPath(); ctx.arc(540, desde + (hasta - desde) * f, 7, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+// --- fotograma ------------------------------------------------------------
+iniciarPlantilla((guion, t) => {
+  const b = guion.bateria;
+  const est = estadoBateria(b, t);
+  dibujarFondo(t, est);
+  const esc = escenaEn(guion, t);
+  if (esc.tipo === "cierre") return dibujarCierre(esc, t);
+
+  dibujarBateria(t, est);
+  dibujarConexion(b, t, est.alfa);
+  // Etiqueta bajo la batería mientras está en reserva.
+  const pEtiqueta = 1 - suave((t - (b.conexion - 0.45)) / 0.45);
+  if (pEtiqueta > 0) dibujarLinea(b.etiqueta, "referencia", 540, BAT.cy + BAT.h / 2 + 70, pEtiqueta, 0);
+  // Marca de agua hasta que aparece el logo grande.
+  dibujarLogo(540, 250, 70, 1, 0.55 * (1 - suave((t - b.conexion) / 0.4)));
+  dibujarEscenaTexto(esc, t);
+});
+</script>
+</body>
+</html>

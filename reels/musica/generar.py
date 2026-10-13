@@ -118,19 +118,25 @@ def componer(guion):
         # Bajo: la primera nota del acorde.
         env = envolvente(int(largo * SR), 0.2 if i == 0 else 0.6, solape)
         colocar(pista, pasa_bajos(pad(frecuencia(notas[0]), largo), 400) * env, inicio, 0, 0.22)
-        # Piano: arpegio lento y espaciado con las notas del acorde una octava arriba.
-        paso = conf.get("pasoPiano", 0.85)
+        # Piano: arpegio con las notas del acorde una octava arriba. Por defecto
+        # lento y espaciado; con "patron": "ascendente" sube nota a nota a ritmo
+        # constante (sensación de algo que crece, p. ej. una carga).
+        paso = acorde.get("paso", conf.get("pasoPiano", 0.85))
+        ascendente = acorde.get("patron") == "ascendente"
         t = inicio + (0.0 if i == 0 else 0.15)
         agudas = [n[:-1] + str(int(n[-1]) + 1) for n in notas[1:]]
         k = 0
         while t < fin - 0.3:
-            nota = agudas[(k * 2 + np.random.randint(0, 2)) % len(agudas)]
+            if ascendente:
+                nota = agudas[k % len(agudas)]
+            else:
+                nota = agudas[(k * 2 + np.random.randint(0, 2)) % len(agudas)]
             colocar(pista, piano(frecuencia(nota)), t, np.random.uniform(-0.35, 0.35), 0.16 + 0.04 * np.random.rand())
-            t += paso * (1 if k % 4 != 3 else 1.5)
+            t += paso * (1 if ascendente or k % 4 != 3 else 1.5)
             k += 1
 
     for c in conf.get("campanas", []):
-        colocar(pista, pasa_bajos(campana(frecuencia(c["nota"])), 5000), c["en"], c.get("pan", 0.0), 0.12)
+        colocar(pista, pasa_bajos(campana(frecuencia(c["nota"])), 5000), c["en"], c.get("pan", 0.0), c.get("ganancia", 0.12))
 
     pista = reverberacion(pista)
     pista = pasa_altos(pista, 45)  # los altavoces del móvil no reproducen graves profundos

@@ -33,7 +33,7 @@ await mkdir(carpeta, { recursive: true });
 const soloVideo = path.join(carpeta, ".video.mp4");
 if (!soloMusica || !existsSync(soloVideo)) {
   // Servidor local mínimo para que la plantilla cargue las fuentes.
-  const TIPOS = { ".html": "text/html", ".woff2": "font/woff2", ".json": "application/json", ".js": "text/javascript" };
+  const TIPOS = { ".html": "text/html", ".css": "text/css", ".woff2": "font/woff2", ".json": "application/json", ".js": "text/javascript" };
   const servidor = createServer(async (req, res) => {
     const archivo = path.join(RAIZ, decodeURIComponent(new URL(req.url, "http://x").pathname));
     if (!archivo.startsWith(RAIZ) || !existsSync(archivo)) { res.writeHead(404); return res.end(); }
