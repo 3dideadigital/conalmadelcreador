@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plantilla carrusel — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  :root { --oro: #d4af6a; --blanco: #f4efe6; }
+  body.render { display: block; min-height: 0; }
+  #diapositiva {
+    position: relative; width: 1080px; height: 1350px; overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 45% at 50% 100%, rgba(176,128,62,0.42), rgba(96,66,30,0.12) 55%, transparent 80%),
+      radial-gradient(ellipse 90% 70% at 50% 45%, rgba(40,28,14,0.55), transparent 75%),
+      #060504;
+    color: var(--blanco); text-align: center;
+  }
+  .fondo { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .contenido {
+    position: absolute; inset: 150px 110px 230px;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+  }
+  .contador, .referencia, .sub, .etiqueta, .lema, .usuario {
+    font-family: Montserrat; font-weight: 500; letter-spacing: 8px; color: var(--oro);
+  }
+  .contador { position: absolute; top: 74px; left: 0; right: 0; font-size: 26px; opacity: 0.8; }
+  .referencia, .etiqueta { font-size: 30px; margin-bottom: 52px; }
+  .versiculo { font: italic 500 64px/1.24 Cormorant; margin: 0; text-wrap: balance; }
+  .separador { width: 140px; height: 2px; background: var(--oro); opacity: 0.6; margin: 58px auto; flex: none; }
+  .reflexion { font: 600 72px/1.12 Cormorant; color: var(--oro); text-wrap: balance; }
+  .antes { font: 500 104px/1.05 Cormorant; }
+  .titulo { font: 600 150px/1 Cormorant; color: var(--oro); margin-top: 6px; }
+  .sub { font-size: 30px; margin-top: 64px; opacity: 0.9; }
+  .desliza { position: absolute; bottom: 110px; right: 96px; font: italic 500 48px Cormorant; opacity: 0.9; }
+  .desliza span { color: var(--oro); font-style: normal; margin-left: 10px; }
+  .oracion { font: italic 500 74px/1.3 Cormorant; }
+  .nota { font: italic 500 46px Cormorant; color: var(--oro); margin-top: 60px; }
+  .lema { font-size: 28px; letter-spacing: 10px; margin-top: 54px; }
+  .nombre { font: 500 84px Cormorant; margin-top: 12px; }
+  .cta { font: italic 500 60px/1.25 Cormorant; text-wrap: balance; }
+  .usuario { font-size: 30px; letter-spacing: 4px; margin-top: 56px; }
+  .pie {
+    position: absolute; bottom: 64px; left: 0; right: 0;
+    display: flex; justify-content: center; align-items: center; gap: 16px;
+    font: 500 24px Montserrat; letter-spacing: 3px; color: var(--blanco); opacity: 0.75;
+  }
+  .logo { display: block; }
+  .sombra { text-shadow: 0 2px 24px rgba(0,0,0,0.6); }
+</style>
+</head>
+<body>
+<div id="diapositiva"></div>
+<script>
+// Plantilla de carrusel (1080×1350): portada, versículos, oración y cierre
+// con la identidad de los reels. El renderizador llama a window.mostrar(i)
+// y fotografía cada diapositiva.
+// Vista previa: carrusel.html?guion=../guiones/03-ansiedad.json&d=1
+
+const USUARIO = "@con_alma_del_creador";
+
+function logo(alto) {
+  // Misma geometría que dibujarLogo() de comun.js, en SVG.
+  const a = 62, arriba = 38, g = a * 0.05, brazo = a * 0.58, cy = arriba - a * 0.02;
+  const arco = r => {
+    const x1 = 50 + r * Math.cos(Math.PI * 1.25), y1 = cy + r * Math.sin(Math.PI * 1.25);
+    const x2 = 50 + r * Math.cos(Math.PI * 1.75);
+    return `<path d="M${x1} ${y1} A${r} ${r} 0 0 1 ${x2} ${y1}"/>`;
+  };
+  return `<svg class="logo" viewBox="20 11 60 91" height="${alto}" aria-hidden="true">
+    <rect x="${50 - g / 2}" y="${arriba}" width="${g}" height="${a}" fill="#f4efe6"/>
+    <rect x="${50 - brazo / 2}" y="${arriba + a * 0.3 - g / 2}" width="${brazo}" height="${g}" fill="#f4efe6"/>
+    <g fill="none" stroke="#d4af6a" stroke-width="${g * 0.95}" stroke-linecap="round"
+       style="filter: drop-shadow(0 0 2px rgba(212,175,106,0.8))">
+      ${arco(a * 0.12)}${arco(a * 0.24)}${arco(a * 0.36)}
+    </g></svg>`;
+}
+
+function fondo() {
+  // Estrellas y dunas con filo dorado, como en el reel del desierto.
+  let semilla = 31;
+  const azar = () => (semilla = (semilla * 1664525 + 1013904223) % 4294967296) / 4294967296;
+  let estrellas = "";
+  for (let i = 0; i < 90; i++) {
+    estrellas += `<circle cx="${azar() * 1080}" cy="${azar() * 1080}" r="${0.7 + azar() * 1.6}" fill="rgba(255,244,220,${0.25 + azar() * 0.45})"/>`;
+  }
+  const duna = (base, ondas, fase, relleno, borde) => {
+    let d = "";
+    for (let x = -10; x <= 1090; x += 10) {
+      let y = base;
+      for (const [a, f, p] of ondas) y += a * Math.sin(x * f + p + fase);
+      d += `${x === -10 ? "M" : "L"}${x} ${y.toFixed(1)} `;
+    }
+    return `<path d="${d} L1090 1350 L-10 1350 Z" fill="${relleno}"/>
+            <path d="${d}" fill="none" stroke="rgba(212,175,106,${borde})" stroke-width="2"/>`;
+  };
+  return `<svg class="fondo" viewBox="0 0 1080 1350" preserveAspectRatio="none">
+    ${estrellas}
+    ${duna(1190, [[34, 0.0042, 0.3], [14, 0.011, 1.7]], 0, "#140e07", 0.5)}
+    ${duna(1265, [[26, 0.0036, 2.1], [10, 0.013, 0.4]], 0, "#0c0805", 0.35)}
+    ${duna(1320, [[18, 0.005, 4.0], [8, 0.009, 2.6]], 0, "#070504", 0.25)}
+  </svg>`;
+}
+
+const pie = () => `<div class="pie">${logo(40)}<span>${USUARIO}</span></div>`;
+
+const DISEÑOS = {
+  portada: d => `
+    <div class="contenido sombra">
+      ${logo(170)}
+      <div class="antes" style="margin-top:56px">${d.antes}</div>
+      <div class="titulo">${d.titulo}</div>
+      <div class="sub">${d.sub}</div>
+    </div>
+    <div class="desliza sombra">${d.desliza}<span>→</span></div>`,
+  versiculo: (d, i, total) => `
+    <div class="contador">${String(d.numero).padStart(2, "0")} / ${String(total).padStart(2, "0")}</div>
+    <div class="contenido sombra">
+      <div class="referencia">${d.referencia}</div>
+      <p class="versiculo">«${d.cita}»</p>
+      <div class="separador"></div>
+      <div class="reflexion">${d.reflexion}</div>
+    </div>${pie()}`,
+  oracion: d => `
+    <div class="contenido sombra">
+      <div class="etiqueta">${d.titulo}</div>
+      <div class="oracion">${d.lineas.join("<br>")}</div>
+      <div class="nota">${d.nota}</div>
+    </div>${pie()}`,
+  cierre: d => `
+    <div class="contenido sombra">
+      ${logo(230)}
+      <div class="lema">MANTENTE CONECTADO</div>
+      <div class="nombre">Con Alma del Creador</div>
+      <div class="separador" style="margin:44px auto"></div>
+      <div class="cta">${d.lineas.join("<br>")}</div>
+      <div class="usuario">${USUARIO}</div>
+    </div>`,
+};
+
+let GUION = null;
+
+window.cargar = async g => {
+  GUION = g;
+  for (const f of ["500 64px Cormorant", "italic 500 64px Cormorant", "600 72px Cormorant", "500 30px Montserrat"])
+    await document.fonts.load(f);
+  await document.fonts.ready;
+};
+
+window.mostrar = i => {
+  const d = GUION.diapositivas[i];
+  const total = GUION.diapositivas.filter(x => x.tipo === "versiculo").length;
+  const caja = document.getElementById("diapositiva");
+  caja.innerHTML = fondo() + DISEÑOS[d.tipo](d, i, total);
+  // Si un versículo largo no cabe, se reduce su tamaño hasta que quepa.
+  const contenido = caja.querySelector(".contenido");
+  const versiculo = caja.querySelector(".versiculo");
+  let tam = 64;
+  while (versiculo && contenido.scrollHeight > contenido.clientHeight && tam > 40) {
+    versiculo.style.fontSize = `${(tam -= 2)}px`;
+  }
+};
+
+const params = new URLSearchParams(location.search);
+if (params.get("guion")) {
+  fetch(params.get("guion")).then(r => r.json()).then(async g => {
+    await window.cargar(g);
+    window.mostrar(Number(params.get("d") || 0));
+  });
+}
+</script>
+</body>
+</html>

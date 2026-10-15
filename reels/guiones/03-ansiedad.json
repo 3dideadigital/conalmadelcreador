@@ -1,0 +1,73 @@
+{
+  "titulo": "Para ti que hoy tienes ansiedad",
+  "formato": "carrusel",
+  "plantilla": "carrusel",
+  "diapositivas": [
+    {
+      "tipo": "portada",
+      "antes": "Para ti que hoy",
+      "titulo": "tienes ansiedad",
+      "sub": "5 VERSÍCULOS PARA RESPIRAR",
+      "desliza": "Desliza"
+    },
+    {
+      "tipo": "versiculo",
+      "numero": 1,
+      "referencia": "FILIPENSES 4:6",
+      "cita": "Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios en toda oración y ruego, con acción de gracias.",
+      "reflexion": "Lo que te quita el sueño, conviértelo en oración."
+    },
+    {
+      "tipo": "versiculo",
+      "numero": 2,
+      "referencia": "1 PEDRO 5:7",
+      "cita": "Echando toda vuestra ansiedad sobre él, porque él tiene cuidado de vosotros.",
+      "reflexion": "No tienes que cargar con todo."
+    },
+    {
+      "tipo": "versiculo",
+      "numero": 3,
+      "referencia": "MATEO 6:34",
+      "cita": "Así que, no os afanéis por el día de mañana, porque el día de mañana traerá su afán. Basta a cada día su propio mal.",
+      "reflexion": "Hoy Dios solo te pide hoy."
+    },
+    {
+      "tipo": "versiculo",
+      "numero": 4,
+      "referencia": "ISAÍAS 41:10",
+      "cita": "No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo; siempre te ayudaré, siempre te sustentaré con la diestra de mi justicia.",
+      "reflexion": "Él está contigo en esto."
+    },
+    {
+      "tipo": "versiculo",
+      "numero": 5,
+      "referencia": "SALMO 94:19",
+      "cita": "En la multitud de mis pensamientos dentro de mí, tus consolaciones alegraban mi alma.",
+      "reflexion": "Cuando tu mente no para, Él sigue ahí."
+    },
+    {
+      "tipo": "oracion",
+      "titulo": "UNA ORACIÓN PARA AHORA",
+      "lineas": [
+        "Señor,",
+        "pongo en tus manos",
+        "lo que no puedo controlar.",
+        "Dame tu paz.",
+        "Amén."
+      ],
+      "nota": "Respira hondo y léela despacio."
+    },
+    {
+      "tipo": "cierre",
+      "lineas": [
+        "Guárdalo para cuando lo necesites",
+        "y envíaselo a quien hoy",
+        "lo esté pasando mal."
+      ]
+    }
+  ],
+  "publicacion": {
+    "texto": "Para ti que hoy tienes ansiedad 🤍\n\nCuando la cabeza no para, a veces lo único que podemos hacer es volver a lo que no cambia. Aquí tienes 5 versículos para leer despacio, uno a uno.\n\n📌 Guárdalo para cuando lo necesites.\n📶 Y envíaselo a quien hoy lo esté pasando mal: puede ser la señal que necesita.\n\nY si la ansiedad no te deja vivir, pedir ayuda a un profesional también es de valientes. Dios también obra a través de las personas que nos cuidan.\n\n(Versículos: Reina-Valera 1960)\n\n#ansiedad #versiculosparalaansiedad #paz #fe #palabradedios #versiculodeldia #cristianos #mantenteconectado",
+    "comentarioFijado": "¿Cuál de estos versículos necesitabas hoy? Dinos el número 👇"
+  }
+}
