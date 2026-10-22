@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plantilla amanecer — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body>
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Plantilla "amanecer": el cielo pasa de la noche a un amanecer cálido a lo
+// largo del reel. En el horizonte se abre una puerta de luz que se funde con
+// el sol al salir. Mensajes de esperanza: algo nuevo llega.
+// Uso en el navegador: amanecer.html?guion=../guiones/04-amanecer.json
+// Tiempos propios en guion.amanecer: { puerta: [inicio, fin], sol: [inicio, fin] }.
+
+// En un cielo más claro, el dorado pasa a un melocotón luminoso.
+ESTILOS.oro.color = ESTILOS.oroGrande.color = "#ffd59a";
+ESTILOS.referencia.color = "#ffe2b8";
+
+const HORIZONTE = 1390;
+const azar = aleatorio(43);
+const ESTRELLAS = Array.from({ length: 140 }, () => ({
+  x: azar() * W, y: azar() * 1200, r: 0.7 + azar() * 1.8,
+  fase: azar() * Math.PI * 2, vel: 0.5 + azar() * 1.6,
+}));
+const MOTAS = Array.from({ length: 60 }, () => ({
+  x: azar() * W, y: azar() * H, r: 1 + azar() * 2.4,
+  vel: 14 + azar() * 30, fase: azar() * Math.PI * 2,
+}));
+const NUBES = [
+  { x: 210, y: 520, w: 360, h: 46, v: 6 },
+  { x: 820, y: 640, w: 420, h: 54, v: -5 },
+  { x: 380, y: 880, w: 300, h: 38, v: 8 },
+  { x: 900, y: 1040, w: 280, h: 34, v: -7 },
+];
+const COLINAS = [
+  { base: 1400, ondas: [[38, 0.0039, 0.7], [16, 0.010, 2.1]], vel: 0.012, noche: [26, 20, 52], dia: [122, 86, 120] },
+  { base: 1530, ondas: [[32, 0.0033, 2.4], [12, 0.012, 0.6]], vel: 0.022, noche: [18, 14, 38], dia: [86, 58, 92] },
+  { base: 1690, ondas: [[26, 0.0048, 4.1], [10, 0.009, 1.9]], vel: 0.034, noche: [10, 8, 24], dia: [52, 34, 60] },
+];
+
+// Paletas del cielo (arriba, medio, horizonte) de la noche al amanecer.
+const CIELOS = [
+  [[8, 10, 30], [22, 24, 66], [58, 44, 92]],
+  [[24, 30, 86], [104, 70, 142], [240, 136, 112]],
+  [[58, 92, 170], [228, 150, 160], [255, 214, 150]],
+];
+const mezclar = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+const rgb = (c, a = 1) => `rgba(${c.map(Math.round).join(",")},${a})`;
+function cielo(k) {
+  const tramo = Math.min(1, Math.floor(k * 2));
+  const f = k * 2 - tramo;
+  return CIELOS[tramo].map((c, i) => mezclar(c, CIELOS[tramo + 1][i], f));
+}
+
+function dibujarFondo(t, dur, a) {
+  // k: 0 → 1 a lo largo del reel (más rápido al principio, se asienta al final).
+  const k = suave(t / (dur * 0.9));
+  const [arriba, medio, horizonte] = cielo(k);
+  let g = ctx.createLinearGradient(0, 0, 0, HORIZONTE + 40);
+  g.addColorStop(0, rgb(arriba));
+  g.addColorStop(0.55, rgb(medio));
+  g.addColorStop(1, rgb(horizonte));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+
+  // Estrellas que se apagan al clarear.
+  for (const e of ESTRELLAS) {
+    const brillo = (0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * e.vel + e.fase))) * (1 - suave(k / 0.55));
+    if (brillo <= 0.01) continue;
+    ctx.fillStyle = `rgba(255,248,230,${brillo * 0.85})`;
+    ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Sol: sube desde detrás del horizonte.
+  const [s0, s1] = a.sol;
+  const pSol = suave((t - s0) / (s1 - s0));
+  const solY = HORIZONTE + 120 - 250 * pSol;
+  const resplandor = 0.35 + 0.65 * k;
+  g = ctx.createRadialGradient(540, solY, 0, 540, solY, 1100);
+  g.addColorStop(0, `rgba(255,224,170,${0.75 * resplandor})`);
+  g.addColorStop(0.25, `rgba(255,170,120,${0.35 * resplandor})`);
+  g.addColorStop(1, "rgba(255,150,120,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  // Rayos de luz girando muy despacio.
+  if (pSol > 0) {
+    ctx.save();
+    ctx.translate(540, solY);
+    ctx.rotate(t * 0.03);
+    for (let i = 0; i < 14; i++) {
+      ctx.rotate(Math.PI * 2 / 14);
+      const rg = ctx.createLinearGradient(0, 0, 0, -1300);
+      rg.addColorStop(0, `rgba(255,236,200,${0.16 * pSol})`);
+      rg.addColorStop(1, "rgba(255,236,200,0)");
+      ctx.fillStyle = rg;
+      ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(-70, -1300); ctx.lineTo(70, -1300); ctx.lineTo(14, 0); ctx.fill();
+    }
+    ctx.restore();
+    ctx.fillStyle = `rgba(255,246,222,${0.95 * pSol})`;
+    ctx.shadowColor = "rgba(255,220,160,0.9)"; ctx.shadowBlur = 80;
+    ctx.beginPath(); ctx.arc(540, solY, 110, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  // Nubes alargadas, iluminadas desde abajo según avanza el amanecer.
+  for (const n of NUBES) {
+    const x = ((n.x + t * n.v) % (W + 600) + W + 600) % (W + 600) - 300;
+    const cg = ctx.createRadialGradient(x, n.y, 0, x, n.y, n.w);
+    const c = mezclar([70, 60, 110], [255, 196, 180], k);
+    cg.addColorStop(0, rgb(c, 0.32 + 0.25 * k));
+    cg.addColorStop(1, rgb(c, 0));
+    ctx.save();
+    ctx.translate(x, n.y); ctx.scale(1, n.h / n.w); ctx.translate(-x, -n.y);
+    ctx.fillStyle = cg;
+    ctx.beginPath(); ctx.arc(x, n.y, n.w, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+
+  dibujarPuerta(t, a.puerta);
+
+  // Colinas en capas (perspectiva atmosférica: más claras al amanecer).
+  for (const c of COLINAS) {
+    ctx.beginPath();
+    for (let x = -10; x <= W + 10; x += 6) {
+      let y = c.base;
+      for (const [amp, f, p] of c.ondas) y += amp * Math.sin(x * f + p + t * c.vel * 6);
+      x === -10 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = `rgba(255,214,170,${0.15 + 0.35 * k})`;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.lineTo(W + 10, H); ctx.lineTo(-10, H); ctx.closePath();
+    ctx.fillStyle = rgb(mezclar(c.noche, c.dia, k * 0.8));
+    ctx.fill();
+  }
+
+  // Motas de luz que suben.
+  for (const m of MOTAS) {
+    const y = ((m.y - t * m.vel) % H + H) % H;
+    const x = m.x + 14 * Math.sin(t * 0.7 + m.fase);
+    ctx.fillStyle = `rgba(255,232,190,${(0.15 + 0.45 * k) * (0.5 + 0.5 * Math.sin(t * 1.4 + m.fase))})`;
+    ctx.beginPath(); ctx.arc(x, y, m.r, 0, Math.PI * 2); ctx.fill();
+  }
+
+  // Viñeta suave para que el texto se lea.
+  g = ctx.createRadialGradient(540, 820, 300, 540, 820, 1250);
+  g.addColorStop(0, "rgba(0,0,0,0)");
+  g.addColorStop(1, `rgba(10,6,24,${0.55 - 0.25 * k})`);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// Puerta de luz en arco que se abre en el horizonte y luego se funde con el sol.
+function dibujarPuerta(t, [inicio, fin]) {
+  if (t < inicio || t > fin + 1.5) return;
+  const abrir = salida((t - inicio) / 2.2);
+  const fundir = 1 - suave((t - fin) / 1.5);
+  const alto = 400, ancho = 240;
+  const base = HORIZONTE + 6, x = 540;
+  ctx.save();
+  ctx.globalAlpha = fundir;
+  // Marco tenue.
+  ctx.strokeStyle = "rgba(255,226,180,0.55)";
+  ctx.lineWidth = 4;
+  arco(x, base, ancho, alto); ctx.stroke();
+  // Luz que entra al abrirse (franja que se ensancha desde el centro).
+  ctx.save();
+  arco(x, base, ancho, alto); ctx.clip();
+  const lg = ctx.createLinearGradient(0, base - alto, 0, base);
+  lg.addColorStop(0, "rgba(255,250,232,0.95)");
+  lg.addColorStop(1, "rgba(255,204,140,0.95)");
+  ctx.fillStyle = lg;
+  ctx.shadowColor = "rgba(255,230,180,1)"; ctx.shadowBlur = 60;
+  const w = ancho * abrir;
+  ctx.fillRect(x - w / 2, base - alto - 10, w, alto + 20);
+  ctx.restore();
+  // Resplandor que sale de la puerta.
+  const g = ctx.createRadialGradient(x, base - alto * 0.45, 0, x, base - alto * 0.45, 700);
+  g.addColorStop(0, `rgba(255,236,196,${0.55 * abrir})`);
+  g.addColorStop(1, "rgba(255,236,196,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+}
+
+function arco(x, base, ancho, alto) {
+  const r = ancho / 2;
+  ctx.beginPath();
+  ctx.moveTo(x - r, base);
+  ctx.lineTo(x - r, base - alto + r);
+  ctx.arc(x, base - alto + r, r, Math.PI, 0);
+  ctx.lineTo(x + r, base);
+  ctx.closePath();
+}
+
+// Invitación a compartir en mitad del reel (no solo al final).
+function dibujarInvitacion(inv, t) {
+  if (!inv) return;
+  const p = suave((t - inv.desde) / 0.6) * (1 - suave((t - inv.hasta + 0.5) / 0.5));
+  if (p <= 0) return;
+  dibujarLinea(inv.texto, "referencia", 540, 1460, p * 0.95, 0);
+}
+
+iniciarPlantilla((guion, t) => {
+  dibujarFondo(t, guion.duracion, guion.amanecer);
+  const esc = escenaEn(guion, t);
+  if (esc.tipo === "cierre") {
+    // Sombra suave detrás del cierre para que se lea sobre el cielo claro.
+    const p = suave((t - esc.inicio) / 0.8);
+    const g = ctx.createRadialGradient(540, 960, 0, 540, 960, 620);
+    g.addColorStop(0, `rgba(30,14,46,${0.5 * p})`);
+    g.addColorStop(1, "rgba(30,14,46,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    return dibujarCierre(esc, t);
+  }
+  dibujarEscenaTexto(esc, t);
+  dibujarLogo(540, 250, 70, 1, 0.6);
+  dibujarInvitacion(guion.amanecer.invitacion, t);
+});
+</script>
+</body>
+</html>

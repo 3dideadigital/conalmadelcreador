@@ -27,6 +27,7 @@ Resultado en `salida/<guion>/`:
 |---|---|---|
 | `desierto` | `guiones/01-desierto.json` | Noche en el desierto con un amanecer que sube durante el reel. |
 | `bateria` | `guiones/02-bateria.json` | Batería espiritual al 3 % que se conecta al logo y se carga al 100 %. Los tiempos van en el apartado `bateria` del guion. |
+| `amanecer` | `guiones/04-amanecer.json` | Cielo que pasa de la noche a un amanecer cálido; se abre una puerta de luz y sale el sol. Para mensajes de esperanza. Tiempos en el apartado `amanecer` (puerta, sol e invitación a compartir a mitad del reel). |
 | `carrusel` | `guiones/03-ansiedad.json` | Carrusel de imágenes 1080×1350 (`"formato": "carrusel"`): portada, versículos con reflexión, oración y cierre. Genera `01.jpg`, `02.jpg`… |
 
 ## Estilos de línea disponibles

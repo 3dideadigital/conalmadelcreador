@@ -1,0 +1,327 @@
+{
+  "titulo": "Algo nuevo se acerca",
+  "plantilla": "amanecer",
+  "duracion": 27.6,
+  "portada": 1.2,
+  "amanecer": {
+    "puerta": [
+      8.4,
+      15.8
+    ],
+    "sol": [
+      13.5,
+      21.5
+    ],
+    "invitacion": {
+      "texto": "ENVÍASELO A QUIEN LO NECESITE",
+      "desde": 12.0,
+      "hasta": 23.4
+    }
+  },
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 3.4,
+      "y": 720,
+      "visibleDesdeInicio": true,
+      "lineas": [
+        {
+          "texto": "Si hoy necesitabas",
+          "estilo": "grande"
+        },
+        {
+          "texto": "una señal…",
+          "estilo": "oroGrande"
+        }
+      ]
+    },
+    {
+      "inicio": 3.4,
+      "fin": 7.4,
+      "y": 760,
+      "lineas": [
+        {
+          "texto": "Algo nuevo",
+          "estilo": "grande"
+        },
+        {
+          "texto": "se acerca a tu vida.",
+          "estilo": "oro",
+          "en": 0.8
+        }
+      ]
+    },
+    {
+      "inicio": 7.4,
+      "fin": 11.6,
+      "y": 700,
+      "lineas": [
+        {
+          "texto": "Esa puerta que llevas",
+          "estilo": "normal"
+        },
+        {
+          "texto": "tanto tiempo esperando…",
+          "estilo": "normal"
+        },
+        {
+          "texto": "se está abriendo.",
+          "estilo": "oro",
+          "en": 1.7
+        }
+      ]
+    },
+    {
+      "inicio": 11.6,
+      "fin": 15.8,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "Si ahora no ves movimiento,",
+          "estilo": "normal"
+        },
+        {
+          "texto": "no es que Dios no esté.",
+          "estilo": "normal",
+          "en": 0.5
+        },
+        {
+          "texto": "Te está preparando",
+          "estilo": "oro",
+          "en": 1.6
+        },
+        {
+          "texto": "para sostener lo que viene.",
+          "estilo": "normal",
+          "en": 2.2
+        }
+      ]
+    },
+    {
+      "inicio": 15.8,
+      "fin": 19.8,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "«He aquí que yo",
+          "estilo": "cita"
+        },
+        {
+          "texto": "hago cosa nueva;",
+          "estilo": "cita"
+        },
+        {
+          "texto": "pronto saldrá a luz.»",
+          "estilo": "cita"
+        },
+        {
+          "texto": "ISAÍAS 43:19",
+          "estilo": "referencia",
+          "en": 1.3
+        }
+      ]
+    },
+    {
+      "inicio": 19.8,
+      "fin": 23.6,
+      "y": 760,
+      "lineas": [
+        {
+          "texto": "Sigue caminando,",
+          "estilo": "normal"
+        },
+        {
+          "texto": "día a día.",
+          "estilo": "normal",
+          "en": 0.4
+        },
+        {
+          "texto": "Él va contigo",
+          "estilo": "oroGrande",
+          "en": 1.2
+        },
+        {
+          "texto": "y no te va a soltar.",
+          "estilo": "normal",
+          "en": 1.9
+        }
+      ]
+    },
+    {
+      "inicio": 23.6,
+      "fin": 27.6,
+      "tipo": "cierre",
+      "lema": "MANTENTE CONECTADO",
+      "nombre": "Con Alma del Creador",
+      "cta": [
+        "Envíaselo a quien espera",
+        "su nuevo amanecer"
+      ]
+    }
+  ],
+  "musica": {
+    "semilla": 19,
+    "pasoPiano": 0.8,
+    "acordes": [
+      {
+        "en": 0,
+        "notas": [
+          "B2",
+          "F#3",
+          "B3",
+          "D4",
+          "F#4",
+          "C#5"
+        ]
+      },
+      {
+        "en": 3.4,
+        "notas": [
+          "G2",
+          "D3",
+          "B3",
+          "D4",
+          "F#4",
+          "A4"
+        ]
+      },
+      {
+        "en": 7.4,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 11.6,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "D4",
+          "E4",
+          "B4"
+        ]
+      },
+      {
+        "en": 13.6,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "C#4",
+          "E4",
+          "B4"
+        ]
+      },
+      {
+        "en": 15.8,
+        "notas": [
+          "G2",
+          "D3",
+          "G3",
+          "B3",
+          "D4",
+          "A4"
+        ],
+        "patron": "ascendente",
+        "paso": 0.32
+      },
+      {
+        "en": 17.8,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "C#4",
+          "E4",
+          "A4"
+        ],
+        "patron": "ascendente",
+        "paso": 0.28
+      },
+      {
+        "en": 19.8,
+        "notas": [
+          "B2",
+          "F#3",
+          "B3",
+          "D4",
+          "F#4",
+          "A4"
+        ]
+      },
+      {
+        "en": 21.7,
+        "notas": [
+          "G2",
+          "D3",
+          "B3",
+          "D4",
+          "G4",
+          "A4"
+        ]
+      },
+      {
+        "en": 23.6,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "E5"
+        ]
+      }
+    ],
+    "campanas": [
+      {
+        "en": 8.6,
+        "nota": "A5",
+        "pan": -0.3,
+        "ganancia": 0.09
+      },
+      {
+        "en": 9.0,
+        "nota": "D6",
+        "pan": 0.0,
+        "ganancia": 0.09
+      },
+      {
+        "en": 9.4,
+        "nota": "F#6",
+        "pan": 0.3,
+        "ganancia": 0.09
+      },
+      {
+        "en": 15.8,
+        "nota": "D6",
+        "ganancia": 0.1
+      },
+      {
+        "en": 24.55,
+        "nota": "A5",
+        "pan": -0.3
+      },
+      {
+        "en": 24.82,
+        "nota": "D6",
+        "pan": 0.0
+      },
+      {
+        "en": 25.08,
+        "nota": "F#6",
+        "pan": 0.3
+      }
+    ]
+  },
+  "publicacion": {
+    "texto": "Si hoy necesitabas una señal, aquí la tienes. 🌅\n\nAlgo nuevo se acerca a tu vida. Esa puerta que llevas tanto tiempo esperando se está abriendo.\n\nY si ahora no ves movimiento, no es que Dios se haya olvidado de ti: te está preparando para que, cuando llegue, puedas sostenerlo. Sigue caminando, día a día. Él va contigo.\n\n«He aquí que yo hago cosa nueva; pronto saldrá a luz; ¿no la conoceréis? Otra vez abriré camino en el desierto, y ríos en la soledad.» — Isaías 43:19 (RVR1960)\n\n📩 Envíaselo a quien está esperando su nuevo amanecer.\n\n#esperanza #fe #algonuevo #isaias4319 #palabradedios #versiculodeldia #cristianos #mantenteconectado",
+    "musica": "El vídeo ya lleva música original compuesta para este reel (sin derechos de autor). Si se prefiere usar una canción de la biblioteca de Instagram, bajar a 0 el volumen del audio original al subirlo.",
+    "comentarioFijado": "¿Qué puerta estás esperando que Dios abra? Escríbelo y oramos por ti 🙏"
+  }
+}
