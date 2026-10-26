@@ -1,0 +1,462 @@
+{
+  "titulo": "Oración por la provisión",
+  "plantilla": "amanecer",
+  "duracion": 43.0,
+  "portada": 1.2,
+  "amanecer": {
+    "puerta": [
+      9.4,
+      18.0
+    ],
+    "sol": [
+      20.0,
+      33.0
+    ],
+    "invitacion": {
+      "texto": "GUÁRDALA PARA ORARLA CADA DÍA",
+      "desde": 12.0,
+      "hasta": 38.6
+    }
+  },
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 3.8,
+      "y": 720,
+      "visibleDesdeInicio": true,
+      "lineas": [
+        {
+          "texto": "Si el dinero",
+          "estilo": "grande"
+        },
+        {
+          "texto": "te quita la paz…",
+          "estilo": "grande"
+        },
+        {
+          "texto": "ora esto conmigo.",
+          "estilo": "oro"
+        }
+      ]
+    },
+    {
+      "inicio": 3.8,
+      "fin": 8.6,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "Señor,",
+          "estilo": "oro"
+        },
+        {
+          "texto": "Tú sabes lo que me falta",
+          "estilo": "normal",
+          "en": 0.4
+        },
+        {
+          "texto": "y lo que me sobra:",
+          "estilo": "normal",
+          "en": 1.2
+        },
+        {
+          "texto": "ansiedad, comparación,",
+          "estilo": "cita",
+          "en": 2.2
+        },
+        {
+          "texto": "miedo.",
+          "estilo": "cita",
+          "en": 2.6
+        }
+      ]
+    },
+    {
+      "inicio": 8.6,
+      "fin": 13.4,
+      "y": 700,
+      "lineas": [
+        {
+          "texto": "Tú que abriste el mar,",
+          "estilo": "normal"
+        },
+        {
+          "texto": "diste el maná",
+          "estilo": "normal",
+          "en": 0.5
+        },
+        {
+          "texto": "y agua de la roca,",
+          "estilo": "normal",
+          "en": 1.0
+        },
+        {
+          "texto": "abre nuevas puertas.",
+          "estilo": "oro",
+          "en": 1.9
+        }
+      ]
+    },
+    {
+      "inicio": 13.4,
+      "fin": 17.4,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "Dame ideas nuevas",
+          "estilo": "normal"
+        },
+        {
+          "texto": "y provisión inesperada.",
+          "estilo": "normal",
+          "en": 0.7
+        }
+      ]
+    },
+    {
+      "inicio": 17.4,
+      "fin": 21.6,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "Recuérdame que mi fuente",
+          "estilo": "normal"
+        },
+        {
+          "texto": "no es mi salario,",
+          "estilo": "normal",
+          "en": 0.7
+        },
+        {
+          "texto": "es tu mano.",
+          "estilo": "oroGrande",
+          "en": 1.6
+        }
+      ]
+    },
+    {
+      "inicio": 21.6,
+      "fin": 26.2,
+      "y": 720,
+      "lineas": [
+        {
+          "texto": "«Mi Dios, pues, suplirá",
+          "estilo": "cita"
+        },
+        {
+          "texto": "todo lo que os falta",
+          "estilo": "cita"
+        },
+        {
+          "texto": "conforme a sus riquezas",
+          "estilo": "cita"
+        },
+        {
+          "texto": "en gloria en Cristo Jesús.»",
+          "estilo": "cita"
+        },
+        {
+          "texto": "FILIPENSES 4:19",
+          "estilo": "referencia",
+          "en": 1.6
+        }
+      ]
+    },
+    {
+      "inicio": 26.2,
+      "fin": 30.6,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "Dame sabiduría",
+          "estilo": "normal"
+        },
+        {
+          "texto": "para salir de las deudas,",
+          "estilo": "normal",
+          "en": 0.5
+        },
+        {
+          "texto": "un corazón generoso",
+          "estilo": "normal",
+          "en": 1.4
+        },
+        {
+          "texto": "y agradecido siempre.",
+          "estilo": "oro",
+          "en": 2.2
+        }
+      ]
+    },
+    {
+      "inicio": 30.6,
+      "fin": 34.8,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "Pongo delante de ti",
+          "estilo": "normal"
+        },
+        {
+          "texto": "cada ingreso, cada gasto,",
+          "estilo": "normal",
+          "en": 0.5
+        },
+        {
+          "texto": "cada decisión.",
+          "estilo": "normal",
+          "en": 1.0
+        },
+        {
+          "texto": "Que el miedo",
+          "estilo": "oro",
+          "en": 1.9
+        },
+        {
+          "texto": "no me gobierne.",
+          "estilo": "oro",
+          "en": 2.2
+        }
+      ]
+    },
+    {
+      "inicio": 34.8,
+      "fin": 39.0,
+      "y": 740,
+      "lineas": [
+        {
+          "texto": "Sé tú mi sustento",
+          "estilo": "normal"
+        },
+        {
+          "texto": "y mi paz.",
+          "estilo": "normal",
+          "en": 0.5
+        },
+        {
+          "texto": "En el nombre de Jesús,",
+          "estilo": "normal",
+          "en": 1.5
+        },
+        {
+          "texto": "amén.",
+          "estilo": "oroGrande",
+          "en": 2.2
+        }
+      ]
+    },
+    {
+      "inicio": 39.0,
+      "fin": 43.0,
+      "tipo": "cierre",
+      "lema": "MANTENTE CONECTADO",
+      "nombre": "Con Alma del Creador",
+      "cta": [
+        "No dejes de orar.",
+        "Envíasela a quien la necesite"
+      ]
+    }
+  ],
+  "musica": {
+    "semilla": 23,
+    "pasoPiano": 0.9,
+    "acordes": [
+      {
+        "en": 0,
+        "notas": [
+          "B2",
+          "F#3",
+          "B3",
+          "D4",
+          "F#4",
+          "C#5"
+        ]
+      },
+      {
+        "en": 3.8,
+        "notas": [
+          "G2",
+          "D3",
+          "B3",
+          "D4",
+          "F#4",
+          "A4"
+        ]
+      },
+      {
+        "en": 8.6,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 13.4,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "C#4",
+          "E4",
+          "B4"
+        ]
+      },
+      {
+        "en": 17.4,
+        "notas": [
+          "B2",
+          "F#3",
+          "B3",
+          "D4",
+          "F#4",
+          "A4"
+        ]
+      },
+      {
+        "en": 21.6,
+        "notas": [
+          "G2",
+          "D3",
+          "G3",
+          "B3",
+          "D4",
+          "A4"
+        ],
+        "patron": "ascendente",
+        "paso": 0.34
+      },
+      {
+        "en": 24.0,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "C#4",
+          "E4",
+          "A4"
+        ],
+        "patron": "ascendente",
+        "paso": 0.3
+      },
+      {
+        "en": 26.2,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 30.6,
+        "notas": [
+          "G2",
+          "D3",
+          "B3",
+          "D4",
+          "G4",
+          "A4"
+        ]
+      },
+      {
+        "en": 32.7,
+        "notas": [
+          "E2",
+          "B3",
+          "E4",
+          "G4",
+          "B4",
+          "D5"
+        ]
+      },
+      {
+        "en": 34.8,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "D4",
+          "E4",
+          "B4"
+        ]
+      },
+      {
+        "en": 36.9,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "C#4",
+          "E4",
+          "B4"
+        ]
+      },
+      {
+        "en": 39.0,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "E5"
+        ]
+      }
+    ],
+    "campanas": [
+      {
+        "en": 9.8,
+        "nota": "A5",
+        "pan": -0.3,
+        "ganancia": 0.09
+      },
+      {
+        "en": 10.2,
+        "nota": "D6",
+        "pan": 0.0,
+        "ganancia": 0.09
+      },
+      {
+        "en": 10.6,
+        "nota": "F#6",
+        "pan": 0.3,
+        "ganancia": 0.09
+      },
+      {
+        "en": 21.6,
+        "nota": "D6",
+        "ganancia": 0.1
+      },
+      {
+        "en": 37.0,
+        "nota": "D6",
+        "ganancia": 0.1
+      },
+      {
+        "en": 39.95,
+        "nota": "A5",
+        "pan": -0.3
+      },
+      {
+        "en": 40.22,
+        "nota": "D6",
+        "pan": 0.0
+      },
+      {
+        "en": 40.48,
+        "nota": "F#6",
+        "pan": 0.3
+      }
+    ]
+  },
+  "publicacion": {
+    "texto": "Si el dinero te quita la paz, ora esto conmigo. 🙏\n\nSeñor, Tú sabes lo que me falta y también lo que me sobra: ansiedad, comparación, miedo.\nTú que abriste el mar, diste el maná y sacaste agua de la roca: abre hoy nuevas puertas. Dame ideas nuevas y provisión inesperada.\nRecuérdame que mi fuente no es mi salario, sino tu mano.\nDame sabiduría para salir de las deudas, un corazón generoso en la abundancia y agradecido en la escasez.\nPongo delante de ti cada ingreso, cada gasto y cada decisión. Que el miedo al futuro no me gobierne.\nQue en mi casa nunca falten techo, pan y propósito. Sé tú mi sustento y mi paz.\nEn el nombre de Jesús, amén.\n\n«Mi Dios, pues, suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús.» — Filipenses 4:19 (RVR1960)\n\n📌 Guárdala para orarla cada día.\n📩 Envíasela a quien esté pasando un momento difícil.\n\n#oracion #oracionpoderosa #provision #fe #confiaendios #filipenses419 #palabradedios #cristianos #mantenteconectado",
+    "musica": "El vídeo ya lleva música original compuesta para este reel (sin derechos de autor). Si se prefiere usar una canción de la biblioteca de Instagram, bajar a 0 el volumen del audio original al subirlo.",
+    "comentarioFijado": "¿Por qué necesidad quieres que oremos contigo? Escríbela y la llevamos en oración 🙏"
+  }
+}

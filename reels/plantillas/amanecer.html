@@ -55,7 +55,7 @@ function cielo(k) {
   return CIELOS[tramo].map((c, i) => mezclar(c, CIELOS[tramo + 1][i], f));
 }
 
-function dibujarFondo(t, dur, a) {
+function dibujarFondo(t, dur, a, ocultarSol = 0) {
   // k: 0 → 1 a lo largo del reel (más rápido al principio, se asienta al final).
   const k = suave(t / (dur * 0.9));
   const [arriba, medio, horizonte] = cielo(k);
@@ -99,7 +99,7 @@ function dibujarFondo(t, dur, a) {
       ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(-70, -1300); ctx.lineTo(70, -1300); ctx.lineTo(14, 0); ctx.fill();
     }
     ctx.restore();
-    ctx.fillStyle = `rgba(255,246,222,${0.95 * pSol})`;
+    ctx.fillStyle = `rgba(255,246,222,${0.95 * pSol * (1 - ocultarSol)})`;
     ctx.shadowColor = "rgba(255,220,160,0.9)"; ctx.shadowBlur = 80;
     ctx.beginPath(); ctx.arc(540, solY, 110, 0, Math.PI * 2); ctx.fill();
     ctx.shadowBlur = 0;
@@ -204,9 +204,24 @@ function dibujarInvitacion(inv, t) {
   dibujarLinea(inv.texto, "referencia", 540, 1460, p * 0.95, 0);
 }
 
+// Sombra suave detrás del bloque de texto; crece al aclararse el cielo.
+function sombraTexto(y, fuerza) {
+  if (fuerza <= 0) return;
+  const g = ctx.createRadialGradient(540, y, 0, 540, y, 560);
+  g.addColorStop(0, `rgba(36,16,52,${fuerza})`);
+  g.addColorStop(1, "rgba(36,16,52,0)");
+  ctx.save();
+  ctx.translate(540, y); ctx.scale(1, 0.62); ctx.translate(-540, -y);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, y - 600, W, 1200);
+  ctx.restore();
+}
+
 iniciarPlantilla((guion, t) => {
-  dibujarFondo(t, guion.duracion, guion.amanecer);
   const esc = escenaEn(guion, t);
+  const ocultarSol = esc.tipo === "cierre" ? suave((t - esc.inicio) / 0.8) : 0;
+  dibujarFondo(t, guion.duracion, guion.amanecer, ocultarSol);
+  if (esc.tipo !== "cierre") sombraTexto(esc.y ?? 840, 0.42 * suave(t / (guion.duracion * 0.9)));
   if (esc.tipo === "cierre") {
     // Sombra suave detrás del cierre para que se lea sobre el cielo claro.
     const p = suave((t - esc.inicio) / 0.8);
