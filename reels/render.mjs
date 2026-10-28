@@ -37,7 +37,8 @@ await mkdir(carpeta, { recursive: true });
 // Abre la plantilla del guion en un navegador sin ventana, servida desde un
 // servidor local mínimo para que cargue las fuentes.
 async function abrirPlantilla(viewport) {
-  const TIPOS = { ".html": "text/html", ".css": "text/css", ".woff2": "font/woff2", ".json": "application/json", ".js": "text/javascript" };
+  const TIPOS = { ".html": "text/html", ".css": "text/css", ".woff2": "font/woff2", ".json": "application/json", ".js": "text/javascript",
+    ".jpg": "image/jpeg", ".png": "image/png", ".webp": "image/webp" };
   const servidor = createServer(async (req, res) => {
     const archivo = path.join(RAIZ, decodeURIComponent(new URL(req.url, "http://x").pathname));
     if (!archivo.startsWith(RAIZ) || !existsSync(archivo)) { res.writeHead(404); return res.end(); }
@@ -81,8 +82,9 @@ async function renderReel() {
     const { pagina, cerrar } = await abrirPlantilla({ width: 1080, height: 1920 });
 
     const fotograma = async t => {
-      const datos = await pagina.evaluate(t => {
-        window.dibujar(t);
+      // dibujar puede ser asíncrono (plantillas que cargan fotogramas o imágenes).
+      const datos = await pagina.evaluate(async t => {
+        await window.dibujar(t);
         return document.getElementById("lienzo").toDataURL("image/png");
       }, t);
       return Buffer.from(datos.split(",")[1], "base64");

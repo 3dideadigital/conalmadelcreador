@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Producto</title>
+<link rel="stylesheet" href="comun.css">
+<style>
+  @font-face { font-family: "Bebas"; font-weight: 400; font-style: normal;
+    src: url("../node_modules/@fontsource/bebas-neue/files/bebas-neue-latin-400-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Montserrat"; font-weight: 600; font-style: normal;
+    src: url("../node_modules/@fontsource/montserrat/files/montserrat-latin-600-normal.woff2") format("woff2"); }
+  @font-face { font-family: "Cormorant"; font-weight: 600; font-style: italic;
+    src: url("../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-600-italic.woff2") format("woff2"); }
+</style>
+</head>
+<body>
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Plantilla para enseñar un producto (impresión 3D para negocios) con el
+// material del cliente: fotogramas de un vídeo y renders.
+//
+// Cada escena del guion define:
+//   "fondo":        "crema" | "oscuro" | "acento" | "desenfocado"
+//   "medio":        {"video": [primerFotograma, últimoFotograma]} o {"imagen": "archivo.webp"}
+//   "disposicion":  "completo" (a sangre) | "tarjeta" | "visor" (tarjeta con interfaz 3D)
+//   "encuadre":     {"centro": [x, y] (0–1), "zoom": [inicial, final], "ancho", "alto", "y"}
+//   "transicion":   "corte" (por defecto: golpe de zoom y destello) | "cortina" (panel de color)
+//   "textos":       [{texto, estilo, x, y, en, alinear, color, tam, subrayar}]
+//   y piezas opcionales: "pasos", "boton", "escaneo".
+// Los tiempos "en" son segundos desde el inicio de la escena.
+
+const PALETA = { crema: "#f3ece2", tinta: "#1e1918", acento: "#7a1f2b", rosa: "#efc9c4", oscuro: "#151010" };
+let MATERIAL = "";
+const color = c => PALETA[c] || c;
+
+// --- carga de imágenes ------------------------------------------------------
+const cache = new Map();
+function imagen(url) {
+  if (!cache.has(url)) {
+    const img = new Image();
+    img.src = url;
+    cache.set(url, img.decode().then(() => img));
+    if (cache.size > 200) cache.delete(cache.keys().next().value);
+  }
+  return cache.get(url);
+}
+const fotograma = n => `${MATERIAL}fotogramas/${String(n).padStart(4, "0")}.jpg`;
+
+// Imágenes que necesita la escena en el instante tl (el fotograma más cercano
+// del tramo de vídeo; mezclar dos fotogramas crea doble imagen al moverse).
+async function medios(esc, tl) {
+  const m = esc.medio;
+  if (!m) return [];
+  if (m.imagen) return [{ img: await imagen(MATERIAL + m.imagen), alfa: 1 }];
+  const [a, b] = m.video;
+  const n = Math.round(a + (b - a) * limitar(tl / (esc.fin - esc.inicio)));
+  // Precarga de los siguientes para la vista previa.
+  for (let k = 1; k < 5; k++) if (n + k <= b) imagen(fotograma(n + k));
+  return [{ img: await imagen(fotograma(n)), alfa: 1 }];
+}
+
+// --- dibujo de medios ---------------------------------------------------------
+// Dibuja la imagen cubriendo el rectángulo, con el punto "centro" (0–1) lo más
+// centrado posible y el zoom indicado.
+function cubrir(capas, rx, ry, rw, rh, centro = [0.5, 0.5], zoom = 1) {
+  for (const { img, alfa } of capas) {
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const s = Math.max(rw / iw, rh / ih) * zoom;
+    const w = iw * s, h = ih * s;
+    let x = rx + rw / 2 - centro[0] * w, y = ry + rh / 2 - centro[1] * h;
+    x = Math.min(rx, Math.max(rx + rw - w, x));
+    y = Math.min(ry, Math.max(ry + rh - h, y));
+    ctx.globalAlpha = alfa;
+    // Al ampliar mucho, un desenfoque leve disimula los dientes de sierra.
+    ctx.filter = s > 2 ? `blur(${(0.45 * s).toFixed(2)}px)` : "none";
+    ctx.drawImage(img, x, y, w, h);
+  }
+  ctx.globalAlpha = 1;
+  ctx.filter = "none";
+}
+
+const pequeño = Object.assign(document.createElement("canvas"), { width: 54, height: 96 });
+function desenfocado(capas, oscuridad) {
+  const c = pequeño.getContext("2d");
+  const { img } = capas[0];
+  const s = Math.max(54 / img.naturalWidth, 96 / img.naturalHeight);
+  c.drawImage(img, 27 - img.naturalWidth * s / 2, 48 - img.naturalHeight * s / 2, img.naturalWidth * s, img.naturalHeight * s);
+  ctx.imageSmoothingQuality = "high";
+  ctx.drawImage(pequeño, -40, -60, W + 80, H + 120);
+  ctx.fillStyle = `rgba(16,10,10,${oscuridad})`;
+  ctx.fillRect(0, 0, W, H);
+}
+
+function rectRedondo(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, r);
+}
+
+function geometriaTarjeta(esc, capas) {
+  const e = esc.encuadre || {};
+  const { img } = capas[0];
+  const ancho = e.ancho ?? 1000;
+  const alto = e.alto ?? ancho * img.naturalHeight / img.naturalWidth;
+  return { x: (W - ancho) / 2, y: (e.y ?? 930) - alto / 2, w: ancho, h: alto, r: e.radio ?? 28 };
+}
+
+function tarjeta(esc, capas, zoom, entrada) {
+  const e = esc.encuadre || {};
+  const g = geometriaTarjeta(esc, capas);
+  const sube = 60 * (1 - entrada);
+  ctx.save();
+  ctx.globalAlpha = entrada;
+  ctx.shadowColor = esc.fondo === "crema" ? "rgba(70,25,25,0.28)" : "rgba(0,0,0,0.55)";
+  ctx.shadowBlur = 60;
+  ctx.shadowOffsetY = 28;
+  rectRedondo(g.x, g.y + sube, g.w, g.h, g.r);
+  ctx.fillStyle = "#000";
+  ctx.fill();
+  ctx.restore();
+  ctx.save();
+  rectRedondo(g.x, g.y + sube, g.w, g.h, g.r);
+  ctx.clip();
+  ctx.globalAlpha = entrada;
+  cubrir(capas.map(c => ({ ...c, alfa: c.alfa * entrada })), g.x, g.y + sube, g.w, g.h, e.centro, zoom);
+  ctx.restore();
+  return { ...g, y: g.y + sube };
+}
+
+// Interfaz de visor 3D sobre la tarjeta: esquinas, rejilla y etiqueta.
+function interfazVisor(g, tl, esc) {
+  const p = salida(tl / 0.5);
+  ctx.save();
+  ctx.strokeStyle = `rgba(243,236,226,${0.9 * p})`;
+  ctx.lineWidth = 5;
+  const m = 26, l = 70 * p;
+  for (const [cx, cy, dx, dy] of [[g.x + m, g.y + m, 1, 1], [g.x + g.w - m, g.y + m, -1, 1],
+                                   [g.x + m, g.y + g.h - m, 1, -1], [g.x + g.w - m, g.y + g.h - m, -1, -1]]) {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy + dy * l); ctx.lineTo(cx, cy); ctx.lineTo(cx + dx * l, cy);
+    ctx.stroke();
+  }
+  // Etiqueta con punto que parpadea.
+  const texto = esc.visor || "VISTA PREVIA 3D";
+  ctx.font = "600 26px Montserrat";
+  ctx.letterSpacing = "5px";
+  const ancho = ctx.measureText(texto).width + 74;
+  ctx.globalAlpha = p;
+  rectRedondo(g.x + 50, g.y + 50, ancho, 52, 26);
+  ctx.fillStyle = "rgba(21,16,16,0.72)";
+  ctx.fill();
+  ctx.fillStyle = PALETA.crema;
+  ctx.textBaseline = "middle";
+  ctx.fillText(texto, g.x + 92, g.y + 77);
+  ctx.globalAlpha = p * (0.55 + 0.45 * Math.cos(tl * 7));
+  ctx.fillStyle = "#e5484d";
+  ctx.beginPath(); ctx.arc(g.x + 74, g.y + 76, 8, 0, 2 * Math.PI); ctx.fill();
+  // Icono de giro 360°.
+  ctx.globalAlpha = p;
+  ctx.strokeStyle = PALETA.crema;
+  ctx.lineWidth = 4;
+  const ix = g.x + g.w - 92, iy = g.y + g.h - 84;
+  ctx.beginPath();
+  ctx.ellipse(ix, iy, 40, 15, 0, 0.15 * Math.PI + tl * 3, 1.85 * Math.PI + tl * 3);
+  ctx.stroke();
+  ctx.font = "400 30px Bebas";
+  ctx.letterSpacing = "1px";
+  ctx.textAlign = "center";
+  ctx.fillStyle = PALETA.crema;
+  ctx.fillText("360°", ix, iy + 2);
+  ctx.restore();
+}
+
+// --- textos -------------------------------------------------------------------
+const ESTILOS_PRODUCTO = {
+  etiqueta: { fuente: "600 28px Montserrat", espaciado: 7, color: "tinta", entrada: "linea" },
+  titulo:   { fuente: "400 150px Bebas", espaciado: 1, color: "tinta", entrada: "mascara" },
+  acento:   { fuente: "italic 600 90px Cormorant", color: "acento", entrada: "deslizar" },
+  chapa:    { fuente: "400 100px Bebas", espaciado: 2, color: "crema", entrada: "chapa" },
+  servicios:{ fuente: "600 25px Montserrat", espaciado: 4, color: "tinta", entrada: "deslizar" },
+};
+
+function fuenteCon(fuente, tam) {
+  return tam ? fuente.replace(/\d+px/, `${tam}px`) : fuente;
+}
+
+function dibujarTexto(t, tl) {
+  const e = ESTILOS_PRODUCTO[t.estilo] || ESTILOS_PRODUCTO.titulo;
+  const p = salida((tl - (t.en ?? 0)) / (e.entrada === "mascara" ? 0.55 : 0.6));
+  if (p <= 0) return;
+  const fuente = fuenteCon(e.fuente, t.tam);
+  const tam = parseInt(fuente.match(/(\d+)px/)[1], 10);
+  const alinear = t.alinear || "center";
+  const x = t.x ?? W / 2, y = t.y;
+  ctx.save();
+  ctx.font = fuente;
+  ctx.letterSpacing = `${e.espaciado || 0}px`;
+  ctx.textAlign = alinear;
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = color(t.color || e.color);
+  const ancho = ctx.measureText(t.texto).width;
+  const izquierda = alinear === "center" ? x - ancho / 2 : alinear === "right" ? x - ancho : x;
+
+  if (e.entrada === "mascara") {
+    ctx.beginPath();
+    ctx.rect(izquierda - 40, y - tam * 0.86, ancho + 80, tam * 1.0);
+    ctx.clip();
+    ctx.fillText(t.texto, x, y + tam * 0.95 * (1 - p));
+  } else if (e.entrada === "linea") {
+    // Raya que se dibuja y texto que aparece a su lado.
+    const raya = 46;
+    ctx.globalAlpha = 0.85;
+    ctx.fillRect(izquierda - raya - 18, y - tam * 0.36, raya * p, 3);
+    ctx.globalAlpha = 0.85 * p;
+    ctx.fillText(t.texto, x + 32 * (1 - p), y);
+  } else if (e.entrada === "chapa") {
+    // Caja de color que se abre de izquierda a derecha y texto que sube dentro.
+    const pad = 34, alto = tam * 1.08;
+    const cajaX = izquierda - pad, cajaY = y - tam * 0.86;
+    const pc = salida((tl - (t.en ?? 0)) / 0.4);
+    ctx.fillStyle = color(t.fondo || "acento");
+    ctx.fillRect(cajaX, cajaY, (ancho + pad * 2) * pc, alto);
+    if (t.num) {
+      ctx.save();
+      ctx.font = "600 30px Montserrat";
+      ctx.letterSpacing = "6px";
+      ctx.textAlign = "left";
+      ctx.fillStyle = color(t.fondo || "acento");
+      ctx.fillRect(cajaX, cajaY - 58, 96 * pc, 58);
+      ctx.fillStyle = PALETA.crema;
+      ctx.globalAlpha = pc;
+      ctx.fillText(t.num, cajaX + 22, cajaY - 18);
+      ctx.restore();
+    }
+    ctx.beginPath();
+    ctx.rect(cajaX, cajaY, ancho + pad * 2, alto);
+    ctx.clip();
+    ctx.fillStyle = color(t.color || e.color);
+    const pt = salida((tl - (t.en ?? 0) - 0.15) / 0.5);
+    ctx.fillText(t.texto, x, y + tam * (1 - pt));
+  } else {
+    ctx.globalAlpha = p;
+    ctx.fillText(t.texto, x, y + 34 * (1 - p));
+  }
+  ctx.restore();
+
+  if (t.subrayar) {
+    const ps = salida((tl - (t.en ?? 0) - 0.45) / 0.5);
+    if (ps > 0) {
+      ctx.save();
+      ctx.strokeStyle = color(t.subrayar === true ? "acento" : t.subrayar);
+      ctx.lineWidth = Math.max(6, tam * 0.06);
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      const y0 = y + tam * 0.16;
+      ctx.moveTo(izquierda, y0 + 6);
+      ctx.quadraticCurveTo(izquierda + ancho * 0.5 * ps, y0 - 4, izquierda + ancho * ps, y0 + 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+}
+
+// --- piezas -------------------------------------------------------------------
+function dibujarPasos(pasos, tl) {
+  const { y, separacion = 270, x = 130, items } = pasos;
+  // Línea vertical que une los números.
+  const pl = limitar((tl - (pasos.en?.[0] ?? 0)) / ((pasos.en?.at(-1) ?? 1) + 0.6 - (pasos.en?.[0] ?? 0)));
+  ctx.save();
+  ctx.fillStyle = "rgba(243,236,226,0.35)";
+  ctx.fillRect(x + 55, y + 30, 3, (separacion * (items.length - 1)) * pl);
+  ctx.restore();
+  items.forEach((it, i) => {
+    const en = pasos.en?.[i] ?? i * 0.6;
+    const p = salida((tl - en) / 0.55);
+    if (p <= 0) return;
+    const yy = y + i * separacion;
+    ctx.save();
+    // Círculo con el número.
+    ctx.fillStyle = PALETA.crema;
+    ctx.globalAlpha = p;
+    ctx.beginPath(); ctx.arc(x + 56, yy, 56 * (0.6 + 0.4 * p), 0, 2 * Math.PI); ctx.fill();
+    ctx.fillStyle = PALETA.acento;
+    ctx.font = "400 64px Bebas";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(it.num, x + 56, yy + 4);
+    // Título y detalle.
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = PALETA.crema;
+    ctx.font = "400 92px Bebas";
+    ctx.letterSpacing = "2px";
+    ctx.fillText(it.titulo, x + 150 + 40 * (1 - p), yy + 10);
+    ctx.font = "italic 600 54px Cormorant";
+    ctx.letterSpacing = "0px";
+    ctx.fillStyle = PALETA.rosa;
+    ctx.globalAlpha = salida((tl - en - 0.15) / 0.55);
+    ctx.fillText(it.detalle, x + 152 + 40 * (1 - p), yy + 72);
+    ctx.restore();
+  });
+}
+
+function dibujarBoton(b, tl) {
+  const p = salida((tl - b.en) / 0.5);
+  if (p <= 0) return;
+  ctx.save();
+  ctx.font = "600 32px Montserrat";
+  ctx.letterSpacing = "4px";
+  const ancho = ctx.measureText(b.texto).width + 150;
+  const latido = 1 + 0.025 * Math.max(0, Math.sin((tl - b.en) * Math.PI * 2 / 1.0));
+  const x = W / 2, y = b.y;
+  ctx.translate(x, y + 30 * (1 - p));
+  ctx.scale(latido, latido);
+  ctx.globalAlpha = p;
+  ctx.shadowColor = "rgba(122,31,43,0.45)";
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetY = 12;
+  rectRedondo(-ancho / 2, -48, ancho, 96, 48);
+  ctx.fillStyle = PALETA.acento;
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.fillStyle = PALETA.crema;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(b.texto, -22, 2);
+  // Flecha.
+  ctx.strokeStyle = PALETA.crema;
+  ctx.lineWidth = 4;
+  ctx.lineCap = "round";
+  const fx = ancho / 2 - 62 + 6 * Math.sin(tl * 6);
+  ctx.beginPath();
+  ctx.moveTo(fx - 18, 2); ctx.lineTo(fx + 12, 2);
+  ctx.moveTo(fx, -10); ctx.lineTo(fx + 12, 2); ctx.lineTo(fx, 14);
+  ctx.stroke();
+  ctx.restore();
+}
+
+// Línea de escaneo que recorre el QR.
+function dibujarEscaneo(s, tl) {
+  const p = (tl - s.en) / (s.duracion ?? 1.1);
+  if (p < 0 || p > 1) return;
+  const y = s.y0 + (s.y1 - s.y0) * suave(p);
+  const alfa = Math.sin(Math.PI * p);
+  ctx.save();
+  const g = ctx.createLinearGradient(0, y - 90, 0, y);
+  g.addColorStop(0, "rgba(229,72,77,0)");
+  g.addColorStop(1, `rgba(229,72,77,${0.28 * alfa})`);
+  ctx.fillStyle = g;
+  ctx.fillRect(s.x0, y - 90, s.x1 - s.x0, 90);
+  ctx.fillStyle = `rgba(255,90,95,${0.95 * alfa})`;
+  ctx.shadowColor = "rgba(255,80,80,0.9)";
+  ctx.shadowBlur = 24;
+  ctx.fillRect(s.x0, y - 3, s.x1 - s.x0, 6);
+  ctx.restore();
+}
+
+// --- acabado ------------------------------------------------------------------
+const granos = Array.from({ length: 4 }, (_, k) => {
+  const c = Object.assign(document.createElement("canvas"), { width: 256, height: 256 });
+  const cx = c.getContext("2d");
+  const datos = cx.createImageData(256, 256);
+  const azar = aleatorio(17 + k * 101);
+  for (let i = 0; i < datos.data.length; i += 4) {
+    const v = 128 + (azar() - 0.5) * 120;
+    datos.data[i] = datos.data[i + 1] = datos.data[i + 2] = v;
+    datos.data[i + 3] = 255;
+  }
+  cx.putImageData(datos, 0, 0);
+  return c;
+});
+
+function acabado(t) {
+  ctx.save();
+  ctx.globalCompositeOperation = "overlay";
+  ctx.globalAlpha = 0.05;
+  ctx.fillStyle = ctx.createPattern(granos[Math.floor(t * 15) % 4], "repeat");
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+  const v = ctx.createRadialGradient(W / 2, H / 2, H * 0.3, W / 2, H / 2, H * 0.75);
+  v.addColorStop(0, "rgba(0,0,0,0)");
+  v.addColorStop(1, "rgba(0,0,0,0.22)");
+  ctx.fillStyle = v;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// --- escena -------------------------------------------------------------------
+function pintarEscena(esc, tl, capas, conTransicion) {
+  const e = esc.encuadre || {};
+  const dur = esc.fin - esc.inicio;
+  const zoom = e.zoom ? e.zoom[0] + (e.zoom[1] - e.zoom[0]) * suave(tl / dur) : 1;
+  const golpe = conTransicion && (esc.transicion ?? "corte") === "corte" ? 0.06 * (1 - salida(tl / 0.45)) : 0;
+
+  // Fondo.
+  if (esc.fondo === "desenfocado" && capas.length) desenfocado(capas, esc.oscuridad ?? 0.55);
+  else {
+    ctx.fillStyle = color(esc.fondo || "crema");
+    ctx.fillRect(0, 0, W, H);
+    if ((esc.fondo || "crema") === "crema") {
+      const g = ctx.createRadialGradient(W / 2, H * 0.45, 100, W / 2, H * 0.45, H * 0.7);
+      g.addColorStop(0, "rgba(255,255,255,0.55)");
+      g.addColorStop(1, "rgba(214,196,176,0.5)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
+  }
+
+  // Medio.
+  if (capas.length) {
+    if (esc.disposicion === "completo") {
+      cubrir(capas, 0, 0, W, H, e.centro, zoom * (1 + golpe));
+      // Degradado para que se lea el texto.
+      // [arriba, abajo] o [arriba, centro, abajo].
+      if (esc.oscurecer) {
+        const o = esc.oscurecer;
+        const g = ctx.createLinearGradient(0, 0, 0, H);
+        o.forEach((v, i) => g.addColorStop(i / (o.length - 1), `rgba(18,10,10,${v})`));
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, W, H);
+      }
+    } else {
+      const entrada = conTransicion ? salida(tl / 0.55) : 1;
+      const g = tarjeta(esc, capas, zoom, entrada);
+      if (esc.disposicion === "visor") interfazVisor(g, tl, esc);
+    }
+  }
+
+  if (esc.escaneo) dibujarEscaneo(esc.escaneo, tl);
+  if (esc.pasos) dibujarPasos(esc.pasos, tl);
+  for (const t of esc.textos || []) dibujarTexto(t, tl);
+  if (esc.boton) dibujarBoton(esc.boton, tl);
+
+  if (golpe > 0) {
+    ctx.fillStyle = `rgba(255,250,244,${0.35 * (1 - limitar(tl / 0.16))})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+}
+
+// Cortina de color: entra desde abajo antes del corte y sale por arriba después.
+function cortina(g, t) {
+  for (const esc of g.escenas) {
+    if (esc.transicion !== "cortina") continue;
+    const antes = (t - (esc.inicio - 0.3)) / 0.3, despues = (t - esc.inicio) / 0.45;
+    ctx.fillStyle = color(esc.colorCortina || "acento");
+    if (antes >= 0 && antes < 1) {
+      const h = H * suave(antes);
+      ctx.fillRect(0, H - h, W, h);
+    } else if (despues >= 0 && despues < 1) {
+      const h = H * (1 - salida(despues));
+      ctx.fillRect(0, 0, W, h);
+    }
+  }
+}
+
+async function dibujarFotograma(g, t) {
+  MATERIAL = g.material || "";
+  Object.assign(PALETA, g.colores || {});
+  // Portada: diseño propio, con todo ya a la vista.
+  if (t < 0 && g.portadaDiseno) {
+    const esc = { inicio: 0, fin: 1, ...g.portadaDiseno };
+    pintarEscena(esc, 99, await medios(esc, 0.5), false);
+    acabado(0);
+    return;
+  }
+  ctx.imageSmoothingQuality = "high";
+  const esc = escenaEn(g, t);
+  const tl = t - esc.inicio;
+  const capas = await medios(esc, tl);
+  pintarEscena(esc, tl, capas, true);
+  cortina(g, t);
+  acabado(t);
+}
+
+iniciarPlantilla(dibujarFotograma);
+const cargarBase = window.cargar;
+window.cargar = async g => {
+  await cargarBase(g);
+  for (const f of ["400 100px Bebas", "600 28px Montserrat", "italic 600 90px Cormorant"]) await document.fonts.load(f);
+  // Imágenes fijas por adelantado.
+  MATERIAL = g.material || "";
+  const fijas = [...g.escenas, g.portadaDiseno || {}].filter(e => e.medio?.imagen).map(e => imagen(MATERIAL + e.medio.imagen));
+  await Promise.all(fijas);
+};
+</script>
+</body>
+</html>

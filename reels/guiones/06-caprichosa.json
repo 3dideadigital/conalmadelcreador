@@ -1,0 +1,567 @@
+{
+  "titulo": "Cartel de mesa con QR — La Caprichosa",
+  "plantilla": "producto",
+  "duracion": 25,
+  "portada": -1,
+  "material": "../material/caprichosa/",
+  "portadaDiseno": {
+    "fondo": "crema",
+    "medio": {
+      "imagen": "frente.webp"
+    },
+    "disposicion": "tarjeta",
+    "encuadre": {
+      "ancho": 900,
+      "y": 1110,
+      "zoom": [
+        1.04,
+        1.04
+      ],
+      "centro": [
+        0.5,
+        0.6
+      ]
+    },
+    "textos": [
+      {
+        "texto": "IMPRESIÓN 3D PARA NEGOCIOS",
+        "estilo": "etiqueta",
+        "y": 360
+      },
+      {
+        "texto": "TU LOGO,",
+        "estilo": "titulo",
+        "tam": 180,
+        "y": 545
+      },
+      {
+        "texto": "en relieve.",
+        "estilo": "acento",
+        "tam": 130,
+        "y": 680
+      },
+      {
+        "texto": "CARTEL DE MESA CON QR",
+        "estilo": "servicios",
+        "y": 1555
+      }
+    ]
+  },
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 3,
+      "medio": {
+        "video": [
+          562,
+          615
+        ]
+      },
+      "disposicion": "completo",
+      "encuadre": {
+        "centro": [
+          0.25,
+          0.45
+        ],
+        "zoom": [
+          1.0,
+          1.12
+        ]
+      },
+      "oscurecer": [
+        0.85,
+        0.72,
+        0.05
+      ],
+      "textos": [
+        {
+          "texto": "IMPRESIÓN 3D PARA NEGOCIOS",
+          "estilo": "etiqueta",
+          "color": "crema",
+          "y": 640,
+          "en": 0.1
+        },
+        {
+          "texto": "¿Y SI TU LOGO",
+          "estilo": "titulo",
+          "color": "crema",
+          "y": 810,
+          "en": 0.15
+        },
+        {
+          "texto": "SE PUDIERA",
+          "estilo": "titulo",
+          "color": "crema",
+          "y": 960,
+          "en": 0.4
+        },
+        {
+          "texto": "tocar?",
+          "estilo": "acento",
+          "color": "rosa",
+          "tam": 210,
+          "y": 1170,
+          "en": 0.95,
+          "subrayar": "rosa"
+        }
+      ]
+    },
+    {
+      "inicio": 3,
+      "fin": 7,
+      "transicion": "cortina",
+      "fondo": "crema",
+      "medio": {
+        "video": [
+          271,
+          380
+        ]
+      },
+      "disposicion": "tarjeta",
+      "encuadre": {
+        "ancho": 1000,
+        "y": 960,
+        "zoom": [
+          1.0,
+          1.06
+        ]
+      },
+      "textos": [
+        {
+          "texto": "PROYECTO · LA CAPRICHOSA",
+          "estilo": "etiqueta",
+          "y": 380,
+          "en": 0.35
+        },
+        {
+          "texto": "CARTEL DE MESA",
+          "estilo": "titulo",
+          "tam": 140,
+          "y": 545,
+          "en": 0.45
+        },
+        {
+          "texto": "con la carta a un escaneo.",
+          "estilo": "acento",
+          "tam": 78,
+          "y": 1425,
+          "en": 0.9
+        }
+      ]
+    },
+    {
+      "inicio": 7,
+      "fin": 9,
+      "medio": {
+        "video": [
+          655,
+          720
+        ]
+      },
+      "disposicion": "completo",
+      "encuadre": {
+        "centro": [
+          0.4,
+          0.62
+        ],
+        "zoom": [
+          1.0,
+          1.08
+        ]
+      },
+      "oscurecer": [
+        0,
+        0.35
+      ],
+      "textos": [
+        {
+          "texto": "LETRAS EN RELIEVE",
+          "estilo": "chapa",
+          "num": "01",
+          "x": 110,
+          "alinear": "left",
+          "y": 1400,
+          "en": 0.15
+        }
+      ]
+    },
+    {
+      "inicio": 9,
+      "fin": 11,
+      "fondo": "crema",
+      "medio": {
+        "imagen": "perfil.webp"
+      },
+      "disposicion": "tarjeta",
+      "encuadre": {
+        "ancho": 660,
+        "y": 880,
+        "zoom": [
+          1.0,
+          1.08
+        ],
+        "centro": [
+          0.5,
+          0.35
+        ]
+      },
+      "textos": [
+        {
+          "texto": "CAPAS CON VOLUMEN",
+          "estilo": "chapa",
+          "num": "02",
+          "x": 110,
+          "alinear": "left",
+          "y": 1450,
+          "en": 0.15
+        }
+      ]
+    },
+    {
+      "inicio": 11,
+      "fin": 13,
+      "medio": {
+        "video": [
+          618,
+          660
+        ]
+      },
+      "disposicion": "completo",
+      "encuadre": {
+        "centro": [
+          0.86,
+          0.55
+        ],
+        "zoom": [
+          1.05,
+          1.12
+        ]
+      },
+      "escaneo": {
+        "x0": 180,
+        "x1": 1010,
+        "y0": 1000,
+        "y1": 1760,
+        "en": 0.45,
+        "duracion": 1.2
+      },
+      "textos": [
+        {
+          "texto": "QR A LA CARTA",
+          "estilo": "chapa",
+          "num": "03",
+          "x": 110,
+          "alinear": "left",
+          "y": 400,
+          "en": 0.15
+        }
+      ]
+    },
+    {
+      "inicio": 13,
+      "fin": 15,
+      "fondo": "crema",
+      "medio": {
+        "imagen": "trasera.webp"
+      },
+      "disposicion": "tarjeta",
+      "encuadre": {
+        "ancho": 940,
+        "y": 1010,
+        "zoom": [
+          1.0,
+          1.06
+        ]
+      },
+      "textos": [
+        {
+          "texto": "BONITO POR DELANTE,",
+          "estilo": "titulo",
+          "tam": 112,
+          "y": 400,
+          "en": 0.05
+        },
+        {
+          "texto": "firme por detrás.",
+          "estilo": "acento",
+          "tam": 96,
+          "y": 520,
+          "en": 0.35
+        }
+      ]
+    },
+    {
+      "inicio": 15,
+      "fin": 17,
+      "fondo": "oscuro",
+      "medio": {
+        "video": [
+          110,
+          258
+        ]
+      },
+      "disposicion": "visor",
+      "visor": "VISTA PREVIA 3D",
+      "encuadre": {
+        "ancho": 1000,
+        "y": 990,
+        "radio": 24
+      },
+      "textos": [
+        {
+          "texto": "PRIMERO",
+          "estilo": "titulo",
+          "color": "crema",
+          "y": 400,
+          "en": 0.05
+        },
+        {
+          "texto": "LO VES EN 3D.",
+          "estilo": "titulo",
+          "color": "crema",
+          "y": 545,
+          "en": 0.2
+        },
+        {
+          "texto": "antes de fabricar nada.",
+          "estilo": "acento",
+          "color": "rosa",
+          "tam": 76,
+          "y": 1480,
+          "en": 0.6
+        }
+      ]
+    },
+    {
+      "inicio": 17,
+      "fin": 21,
+      "fondo": "acento",
+      "textos": [
+        {
+          "texto": "ASÍ TRABAJAMOS",
+          "estilo": "etiqueta",
+          "color": "crema",
+          "tam": 30,
+          "x": 190,
+          "alinear": "left",
+          "y": 470,
+          "en": 0.05
+        },
+        {
+          "texto": "DE TU LOGO A TU MESA",
+          "estilo": "titulo",
+          "color": "crema",
+          "tam": 112,
+          "x": 120,
+          "alinear": "left",
+          "y": 640,
+          "en": 0.1
+        }
+      ],
+      "pasos": {
+        "y": 860,
+        "separacion": 250,
+        "x": 120,
+        "en": [
+          0.5,
+          1.1,
+          1.7
+        ],
+        "items": [
+          {
+            "num": "01",
+            "titulo": "DISEÑO",
+            "detalle": "a partir de tu logo"
+          },
+          {
+            "num": "02",
+            "titulo": "VISTA 3D",
+            "detalle": "la apruebas antes de fabricar"
+          },
+          {
+            "num": "03",
+            "titulo": "IMPRESIÓN 3D",
+            "detalle": "con los colores de tu marca"
+          }
+        ]
+      }
+    },
+    {
+      "inicio": 21,
+      "fin": 25,
+      "fondo": "crema",
+      "medio": {
+        "imagen": "frente.webp"
+      },
+      "disposicion": "tarjeta",
+      "encuadre": {
+        "ancho": 940,
+        "y": 925,
+        "zoom": [
+          1.1,
+          1.04
+        ],
+        "centro": [
+          0.5,
+          0.6
+        ]
+      },
+      "textos": [
+        {
+          "texto": "¿Y SI EL PRÓXIMO",
+          "estilo": "titulo",
+          "tam": 124,
+          "y": 340,
+          "en": 0.05
+        },
+        {
+          "texto": "es el tuyo?",
+          "estilo": "acento",
+          "tam": 120,
+          "y": 480,
+          "en": 0.35,
+          "subrayar": true
+        },
+        {
+          "texto": "CARTELES · DISPLAYS · REGALOS DE EMPRESA",
+          "estilo": "servicios",
+          "y": 1370,
+          "en": 0.8
+        }
+      ],
+      "boton": {
+        "texto": "ESCRÍBENOS POR MENSAJE",
+        "y": 1465,
+        "en": 1.2
+      }
+    }
+  ],
+  "musica": {
+    "estilo": "ritmo",
+    "bpm": 120,
+    "primerCompas": -1.0,
+    "semilla": 5,
+    "acordes": [
+      [
+        "E2",
+        "G3",
+        "B3",
+        "D4",
+        "G4"
+      ],
+      [
+        "A2",
+        "C4",
+        "E4",
+        "G4",
+        "B4"
+      ],
+      [
+        "F2",
+        "A3",
+        "C4",
+        "E4",
+        "G4"
+      ],
+      [
+        "G2",
+        "B3",
+        "D4",
+        "E4",
+        "A4"
+      ]
+    ],
+    "acordeFinal": [
+      "C2",
+      "G3",
+      "C4",
+      "E4",
+      "G4",
+      "B4",
+      "D5"
+    ],
+    "partes": {
+      "bombo": [
+        [
+          3,
+          15
+        ],
+        [
+          17,
+          24
+        ]
+      ],
+      "palmas": [
+        [
+          3,
+          15
+        ],
+        [
+          17,
+          24
+        ]
+      ],
+      "hats": [
+        [
+          1,
+          24
+        ]
+      ],
+      "bajo": [
+        [
+          3,
+          15
+        ],
+        [
+          17,
+          24
+        ]
+      ],
+      "acordes": [
+        [
+          0,
+          24
+        ]
+      ],
+      "arpegio": [
+        [
+          7,
+          13
+        ],
+        [
+          15,
+          21
+        ]
+      ]
+    },
+    "subidas": [
+      [
+        1.0,
+        3.0
+      ],
+      [
+        15.5,
+        17.0
+      ]
+    ],
+    "golpes": [
+      3.0,
+      17.0,
+      21.0
+    ],
+    "barridos": [
+      7.0,
+      9.0,
+      11.0,
+      13.0,
+      15.0
+    ],
+    "final": 24.0,
+    "finalSuave": 0.8
+  },
+  "publicacion": {
+    "texto": "¿Y si tu logo se pudiera tocar? ✨\n\nEste es el cartel de mesa que hemos diseñado para La Caprichosa, pastelería: su logo en relieve, sus colores y un QR que lleva directo a la carta.\n\nAsí trabajamos:\n1️⃣ Diseñamos a partir de tu logo.\n2️⃣ Te enseñamos el modelo en 3D para que lo apruebes antes de fabricar nada.\n3️⃣ Lo imprimimos en 3D con los colores de tu marca.\n\nCarteles de mesa, displays, señalética y regalos de empresa para restaurantes, cafeterías, tiendas y oficinas.\n\n📩 Escríbenos por mensaje y diseñamos el de tu negocio.\n\n#impresion3d #impresion3dpersonalizada #señaletica #cartaqr #cartelqr #hosteleria #restaurantes #pasteleria #cafeteria #regalosdeempresa #merchandising #diseño3d #pymes #negociolocal",
+    "musica": "El vídeo ya lleva una base rítmica original (sin derechos). Si se prefiere una canción de Instagram, buscar algo instrumental y elegante a unos 120 BPM (house suave o «chill pop») para que los cortes sigan cayendo a ritmo.",
+    "comentarioFijado": "¿Para qué negocio te gustaría ver uno así? Te leemos 👇"
+  }
+}

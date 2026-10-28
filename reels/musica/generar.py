@@ -98,6 +98,9 @@ def colocar(pista, señal, inicio, pan=0.0, ganancia=1.0):
 
 def componer(guion):
     conf = guion["musica"]
+    if conf.get("estilo") == "ritmo":
+        from ritmo import componer_ritmo  # base rítmica para reels de producto
+        return componer_ritmo(guion)
     dur = guion["duracion"]
     np.random.seed(conf.get("semilla", 7))
     total = int((dur + 0.5) * SR)
