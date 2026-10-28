@@ -1,0 +1,638 @@
+{
+  "titulo": "¡Oh, si me hubieras escuchado! (Salmo 81)",
+  "plantilla": "escucha",
+  "duracion": 35.4,
+  "portada": 1.6,
+  "escucha": {
+    "telefono": {
+      "intervalo": [
+        0,
+        10.4
+      ],
+      "previas": 5,
+      "ritmo": 0.36,
+      "silencio": 7.6,
+      "notificaciones": [
+        {
+          "app": "MENSAJES",
+          "texto": "Grupo familia: 23 mensajes nuevos",
+          "color": 0
+        },
+        {
+          "app": "OFERTAS",
+          "texto": "Solo hoy: -50 % en todo",
+          "color": 1
+        },
+        {
+          "app": "NOTICIAS",
+          "texto": "Última hora: no te lo pierdas",
+          "color": 2
+        },
+        {
+          "app": "ME GUSTA",
+          "texto": "A 12 personas les gusta tu foto",
+          "color": 3
+        },
+        {
+          "app": "CORREO",
+          "texto": "Tienes 48 correos sin leer",
+          "color": 4
+        },
+        {
+          "app": "RECORDATORIO",
+          "texto": "Reunión a las 18:00",
+          "color": 5
+        },
+        {
+          "app": "VÍDEOS",
+          "texto": "Nuevo vídeo de tu canal favorito",
+          "color": 6
+        },
+        {
+          "app": "TRABAJO",
+          "texto": "¿Lo tienes para hoy?",
+          "color": 7
+        },
+        {
+          "app": "COMPRAS",
+          "texto": "Tu pedido llega mañana",
+          "color": 8
+        },
+        {
+          "app": "MENSAJES",
+          "texto": "¿Has visto esto?",
+          "color": 9
+        },
+        {
+          "app": "NOTICIAS",
+          "texto": "Lo que todo el mundo comenta",
+          "color": 10
+        },
+        {
+          "app": "JUEGOS",
+          "texto": "Tus vidas se han recargado",
+          "color": 11
+        },
+        {
+          "app": "OFERTAS",
+          "texto": "Última oportunidad",
+          "color": 12
+        },
+        {
+          "app": "ME GUSTA",
+          "texto": "Tienes 5 seguidores nuevos",
+          "color": 13
+        },
+        {
+          "app": "MENSAJES",
+          "texto": "Contesta, porfa",
+          "color": 14
+        },
+        {
+          "app": "CORREO",
+          "texto": "Factura disponible",
+          "color": 15
+        },
+        {
+          "app": "VÍDEOS",
+          "texto": "Directo ahora",
+          "color": 16
+        },
+        {
+          "app": "NOTICIAS",
+          "texto": "Alerta: nueva actualización",
+          "color": 17
+        },
+        {
+          "app": "MENSAJES",
+          "texto": "Grupo trabajo: 9 mensajes",
+          "color": 18
+        },
+        {
+          "app": "RECORDATORIO",
+          "texto": "No olvides pagar el recibo",
+          "color": 19
+        },
+        {
+          "app": "OFERTAS",
+          "texto": "Te hemos guardado tu carrito",
+          "color": 20
+        },
+        {
+          "app": "ME GUSTA",
+          "texto": "Alguien comentó tu foto",
+          "color": 21
+        }
+      ],
+      "dios": {
+        "texto": "¡Oh, si me hubieras escuchado…!",
+        "llega": 4.8
+      }
+    },
+    "ilustraciones": {
+      "camino": {
+        "intervalo": [
+          10.4,
+          15.4
+        ]
+      },
+      "muro": {
+        "intervalo": [
+          15.4,
+          19.6
+        ],
+        "cae": 17.0
+      },
+      "trigo": {
+        "intervalo": [
+          19.6,
+          31.4
+        ],
+        "atenuar": [
+          [
+            25.0,
+            0.45
+          ],
+          [
+            28.4,
+            0.6
+          ]
+        ]
+      }
+    },
+    "invitacion": {
+      "texto": "ENVÍASELO A QUIEN LO NECESITE",
+      "desde": 11.0,
+      "hasta": 30.8
+    }
+  },
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 3.6,
+      "y": 500,
+      "visibleDesdeInicio": true,
+      "lineas": [
+        {
+          "texto": "Tanto ruido…",
+          "estilo": "grande"
+        }
+      ]
+    },
+    {
+      "inicio": 3.6,
+      "fin": 7.6,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "…que ya no oímos",
+          "estilo": "normal"
+        },
+        {
+          "texto": "su voz.",
+          "estilo": "oroGrande",
+          "en": 0.8
+        }
+      ]
+    },
+    {
+      "inicio": 7.6,
+      "fin": 10.4,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "Cuando apagas el ruido,",
+          "estilo": "normal"
+        },
+        {
+          "texto": "su voz se escucha.",
+          "estilo": "oro",
+          "en": 0.9
+        }
+      ]
+    },
+    {
+      "inicio": 10.4,
+      "fin": 15.4,
+      "y": 560,
+      "lineas": [
+        {
+          "texto": "«¡Oh, si me hubiera oído",
+          "estilo": "cita"
+        },
+        {
+          "texto": "mi pueblo, si en mis caminos",
+          "estilo": "cita"
+        },
+        {
+          "texto": "hubiera andado Israel!»",
+          "estilo": "cita"
+        },
+        {
+          "texto": "SALMO 81:13",
+          "estilo": "referencia",
+          "en": 1.4
+        }
+      ]
+    },
+    {
+      "inicio": 15.4,
+      "fin": 19.6,
+      "y": 580,
+      "lineas": [
+        {
+          "texto": "«En un momento",
+          "estilo": "cita"
+        },
+        {
+          "texto": "habría yo derribado",
+          "estilo": "oro",
+          "en": 0.6
+        },
+        {
+          "texto": "a sus enemigos…»",
+          "estilo": "cita",
+          "en": 1.0
+        },
+        {
+          "texto": "SALMO 81:14",
+          "estilo": "referencia",
+          "en": 1.4
+        }
+      ]
+    },
+    {
+      "inicio": 19.6,
+      "fin": 25.0,
+      "y": 540,
+      "lineas": [
+        {
+          "texto": "«Les sustentaría Dios",
+          "estilo": "cita"
+        },
+        {
+          "texto": "con lo mejor del trigo,",
+          "estilo": "cita"
+        },
+        {
+          "texto": "y con miel de la peña",
+          "estilo": "cita",
+          "en": 1.2
+        },
+        {
+          "texto": "les saciaría.»",
+          "estilo": "cita",
+          "en": 1.5
+        },
+        {
+          "texto": "SALMO 81:16",
+          "estilo": "referencia",
+          "en": 2.2
+        }
+      ]
+    },
+    {
+      "inicio": 25.0,
+      "fin": 28.4,
+      "y": 620,
+      "lineas": [
+        {
+          "texto": "Todo eso",
+          "estilo": "normal"
+        },
+        {
+          "texto": "estaba preparado.",
+          "estilo": "normal",
+          "en": 0.4
+        },
+        {
+          "texto": "Solo faltaba",
+          "estilo": "oro",
+          "en": 1.3
+        },
+        {
+          "texto": "escuchar.",
+          "estilo": "oroGrande",
+          "en": 1.7
+        }
+      ]
+    },
+    {
+      "inicio": 28.4,
+      "fin": 31.4,
+      "y": 620,
+      "lineas": [
+        {
+          "texto": "¿Qué te estás",
+          "estilo": "grande"
+        },
+        {
+          "texto": "perdiendo",
+          "estilo": "grande"
+        },
+        {
+          "texto": "por no escuchar?",
+          "estilo": "oro",
+          "en": 0.8
+        }
+      ]
+    },
+    {
+      "inicio": 31.4,
+      "fin": 35.4,
+      "tipo": "cierre",
+      "lema": "MANTENTE CONECTADO",
+      "nombre": "Con Alma del Creador",
+      "cta": [
+        "Silencia el ruido.",
+        "Escucha su voz."
+      ]
+    }
+  ],
+  "musica": {
+    "semilla": 81,
+    "pasoPiano": 1.1,
+    "acordes": [
+      {
+        "en": 0,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 3.6,
+        "notas": [
+          "A#1",
+          "F3",
+          "A#3",
+          "D4",
+          "F4",
+          "C5"
+        ]
+      },
+      {
+        "en": 7.6,
+        "notas": [
+          "G2",
+          "D3",
+          "G3",
+          "A#3",
+          "D4",
+          "A4"
+        ]
+      },
+      {
+        "en": 10.4,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 12.9,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "D5"
+        ]
+      },
+      {
+        "en": 15.4,
+        "notas": [
+          "A#1",
+          "F3",
+          "A#3",
+          "D4",
+          "F4",
+          "C5"
+        ]
+      },
+      {
+        "en": 17.0,
+        "notas": [
+          "A1",
+          "E3",
+          "A3",
+          "C#4",
+          "E4",
+          "A4"
+        ]
+      },
+      {
+        "en": 19.6,
+        "notas": [
+          "F2",
+          "C3",
+          "F3",
+          "A3",
+          "C4",
+          "G4"
+        ],
+        "patron": "ascendente",
+        "paso": 0.34
+      },
+      {
+        "en": 22.3,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "D5"
+        ],
+        "patron": "ascendente",
+        "paso": 0.32
+      },
+      {
+        "en": 25.0,
+        "notas": [
+          "G2",
+          "D3",
+          "G3",
+          "A#3",
+          "D4",
+          "F4"
+        ]
+      },
+      {
+        "en": 28.4,
+        "notas": [
+          "A1",
+          "E3",
+          "A3",
+          "D4",
+          "E4",
+          "A4"
+        ]
+      },
+      {
+        "en": 31.4,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F#4",
+          "A4",
+          "E5"
+        ]
+      }
+    ],
+    "campanas": [
+      {
+        "en": 0.05,
+        "nota": "D5",
+        "ganancia": 0.1
+      },
+      {
+        "en": 0.36,
+        "nota": "C6",
+        "pan": 0.24,
+        "ganancia": 0.035
+      },
+      {
+        "en": 0.72,
+        "nota": "E6",
+        "pan": 0.34,
+        "ganancia": 0.035
+      },
+      {
+        "en": 1.08,
+        "nota": "G6",
+        "pan": 0.15,
+        "ganancia": 0.035
+      },
+      {
+        "en": 1.44,
+        "nota": "G6",
+        "pan": -0.39,
+        "ganancia": 0.035
+      },
+      {
+        "en": 1.8,
+        "nota": "A5",
+        "pan": 0.37,
+        "ganancia": 0.035
+      },
+      {
+        "en": 2.16,
+        "nota": "A5",
+        "pan": 0.04,
+        "ganancia": 0.035
+      },
+      {
+        "en": 2.52,
+        "nota": "G6",
+        "pan": -0.49,
+        "ganancia": 0.035
+      },
+      {
+        "en": 2.88,
+        "nota": "G6",
+        "pan": -0.09,
+        "ganancia": 0.035
+      },
+      {
+        "en": 3.24,
+        "nota": "G6",
+        "pan": 0.42,
+        "ganancia": 0.035
+      },
+      {
+        "en": 3.6,
+        "nota": "A5",
+        "pan": -0.34,
+        "ganancia": 0.035
+      },
+      {
+        "en": 3.96,
+        "nota": "E6",
+        "pan": -0.36,
+        "ganancia": 0.035
+      },
+      {
+        "en": 4.32,
+        "nota": "A5",
+        "pan": -0.37,
+        "ganancia": 0.035
+      },
+      {
+        "en": 4.68,
+        "nota": "E6",
+        "pan": 0.47,
+        "ganancia": 0.035
+      },
+      {
+        "en": 5.04,
+        "nota": "E6",
+        "pan": -0.29,
+        "ganancia": 0.035
+      },
+      {
+        "en": 5.4,
+        "nota": "G6",
+        "pan": 0.46,
+        "ganancia": 0.035
+      },
+      {
+        "en": 5.76,
+        "nota": "G6",
+        "pan": 0.37,
+        "ganancia": 0.035
+      },
+      {
+        "en": 6.12,
+        "nota": "C6",
+        "pan": -0.19,
+        "ganancia": 0.035
+      },
+      {
+        "en": 8.3,
+        "nota": "D6",
+        "ganancia": 0.13
+      },
+      {
+        "en": 17.0,
+        "nota": "A4",
+        "ganancia": 0.12
+      },
+      {
+        "en": 19.9,
+        "nota": "C6",
+        "ganancia": 0.08
+      },
+      {
+        "en": 32.35,
+        "nota": "A5",
+        "pan": -0.3
+      },
+      {
+        "en": 32.62,
+        "nota": "D6",
+        "pan": 0.0
+      },
+      {
+        "en": 32.88,
+        "nota": "F#6",
+        "pan": 0.3
+      }
+    ]
+  },
+  "publicacion": {
+    "texto": "Tanto ruido… que ya no oímos su voz. 📵\n\nEn el Salmo 81, Dios no amenaza: se lamenta, como un padre que echa de menos a su hijo. Tenía preparado lo mejor —victoria, sustento, miel de la peña—, y su pueblo se lo perdió por no escuchar.\n\n«¡Oh, si me hubiera oído mi pueblo, si en mis caminos hubiera andado Israel! En un momento habría yo derribado a sus enemigos, y vuelto mi mano contra sus adversarios. Los que aborrecen a Jehová se le habrían sometido, y el tiempo de ellos sería para siempre. Les sustentaría Dios con lo mejor del trigo, y con miel de la peña les saciaría.» — Salmo 81:13-16 (RVR1960)\n\nHoy, silencia el ruido un momento. Él sigue hablando. 📶✝️\n\n📩 Envíaselo a quien necesite escucharlo.\n\n#salmos #salmo81 #escuchaadios #fe #palabradedios #versiculodeldia #cristianos #mantenteconectado",
+    "musica": "El vídeo ya lleva música original compuesta para este reel (sin derechos de autor). Si se prefiere usar una canción de la biblioteca de Instagram, bajar a 0 el volumen del audio original al subirlo.",
+    "comentarioFijado": "¿Qué ruido te está impidiendo escuchar a Dios últimamente? 👇"
+  }
+}

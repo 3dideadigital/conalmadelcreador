@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plantilla escucha — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body>
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Plantilla "escucha": un móvil se llena de notificaciones (ruido) que
+// entierran un mensaje de Dios; al silenciarlo, su voz se escucha. Después,
+// ilustraciones de línea dorada que se trazan solas (cruce de caminos, muro
+// que cae, trigo y miel de la peña). Pensada para Salmo 81:13-16.
+// Uso: escucha.html?guion=../guiones/06-salmo81.json
+// Tiempos en guion.escucha: telefono, ilustraciones (camino, muro, trigo).
+
+const OSCURO = "#060504";
+const MIEL = [242, 169, 59];
+
+// --- utilidades de dibujo de línea ---------------------------------------
+function curva(p0, p1, p2, n = 40) {
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const t = i / n, u = 1 - t;
+    pts.push([u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0], u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1]]);
+  }
+  return pts;
+}
+// Dibuja una polilínea hasta la fracción p de su longitud (efecto "se traza sola").
+function trazo(pts, p, ancho = 4, alfa = 1) {
+  if (p <= 0) return;
+  let total = 0;
+  const seg = [];
+  for (let i = 1; i < pts.length; i++) {
+    const l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+    seg.push(l); total += l;
+  }
+  let resto = total * limitar(p);
+  ctx.save();
+  ctx.strokeStyle = `rgba(${ORO_RGB},${alfa})`;
+  ctx.lineWidth = ancho; ctx.lineCap = "round"; ctx.lineJoin = "round";
+  ctx.shadowColor = `rgba(${ORO_RGB},${0.7 * alfa})`; ctx.shadowBlur = 14;
+  ctx.beginPath(); ctx.moveTo(...pts[0]);
+  for (let i = 1; i < pts.length && resto > 0; i++) {
+    const f = Math.min(1, resto / seg[i - 1]);
+    ctx.lineTo(pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * f, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * f);
+    resto -= seg[i - 1];
+  }
+  ctx.stroke();
+  ctx.restore();
+}
+
+// --- fondo ----------------------------------------------------------------
+const azar = aleatorio(81);
+const ESTRELLAS = Array.from({ length: 120 }, () => ({
+  x: azar() * W, y: azar() * H, r: 0.7 + azar() * 1.6, fase: azar() * 6.3, vel: 0.5 + azar() * 1.5,
+}));
+function dibujarFondo(t) {
+  ctx.fillStyle = OSCURO;
+  ctx.fillRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(540, 1100, 0, 540, 1100, 1100);
+  g.addColorStop(0, "rgba(70,50,24,0.35)");
+  g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  for (const e of ESTRELLAS) {
+    ctx.fillStyle = `rgba(255,244,220,${0.25 * (0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * e.vel + e.fase)))})`;
+    ctx.beginPath(); ctx.arc(e.x, e.y, e.r, 0, Math.PI * 2); ctx.fill();
+  }
+}
+
+// --- móvil con notificaciones --------------------------------------------
+const MOVIL = { x: 305, y: 690, w: 470, h: 820, r: 60 };
+const COLORES_APP = ["#5b8def", "#e5484d", "#46a758", "#f5a524", "#8e4ec6", "#12a594", "#d6409f"];
+
+function recortar(texto, ancho) {
+  if (ctx.measureText(texto).width <= ancho) return texto;
+  while (texto.length && ctx.measureText(texto + "…").width > ancho) texto = texto.slice(0, -1);
+  return texto + "…";
+}
+
+const ALTO_TARJETA = 92, ALTO_DIOS = 124;
+function tarjeta(n, x, y, alfa, escala, dios, brillo) {
+  const w = 430, h = dios ? ALTO_DIOS : ALTO_TARJETA;
+  ctx.save();
+  ctx.globalAlpha = alfa;
+  ctx.translate(x + w / 2, y + h / 2); ctx.scale(escala, escala); ctx.translate(-w / 2, -h / 2);
+  ctx.fillStyle = dios ? `rgba(40,30,14,${0.9})` : "rgba(255,255,255,0.09)";
+  ctx.strokeStyle = dios ? `rgba(${ORO_RGB},${0.4 + 0.6 * brillo})` : "rgba(255,255,255,0.14)";
+  ctx.lineWidth = dios ? 3 : 2;
+  if (dios && brillo > 0) { ctx.shadowColor = `rgba(${ORO_RGB},${brillo})`; ctx.shadowBlur = 40 * brillo; }
+  ctx.beginPath(); ctx.roundRect(0, 0, w, h, 22); ctx.fill(); ctx.stroke();
+  ctx.shadowBlur = 0;
+  if (dios) {
+    ctx.restore(); ctx.save();
+    ctx.globalAlpha = alfa;
+    ctx.translate(x + w / 2, y + h / 2); ctx.scale(escala, escala); ctx.translate(-w / 2, -h / 2);
+    // Mini logo cruz-wifi como icono.
+    ctx.translate(0, 0);
+    const prev = ctx.globalAlpha;
+    ctx.save(); ctx.translate(-540 + 46, -250 + 26); dibujarLogo(540, 250, 40, 1, prev); ctx.restore();
+  } else {
+    ctx.fillStyle = COLORES_APP[n.color % COLORES_APP.length];
+    ctx.beginPath(); ctx.arc(46, h / 2, 22, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.textBaseline = "middle";
+  ctx.font = "500 20px Montserrat";
+  ctx.letterSpacing = "2px";
+  ctx.fillStyle = dios ? ORO : "rgba(255,255,255,0.6)";
+  ctx.fillText(n.app, 86, 30);
+  ctx.letterSpacing = "0px";
+  ctx.font = "500 23px Montserrat";
+  ctx.fillStyle = dios ? BLANCO : "rgba(255,255,255,0.88)";
+  if (dios) {
+    // El mensaje de Dios no se recorta: se reparte en dos líneas.
+    const palabras = n.texto.split(" ");
+    let l1 = "";
+    while (palabras.length && ctx.measureText((l1 + " " + palabras[0]).trim()).width <= 320) l1 = (l1 + " " + palabras.shift()).trim();
+    ctx.fillText(l1, 86, 62);
+    ctx.fillText(palabras.join(" "), 86, 94);
+  } else {
+    ctx.fillText(recortar(n.texto, 320), 86, 62);
+  }
+  ctx.restore();
+}
+
+function dibujarTelefono(cfg, t) {
+  const [inicio, fin] = cfg.intervalo;
+  if (t > fin) return;
+  const fuera = 1 - suave((t - (fin - 0.6)) / 0.6);
+  const ritmo = cfg.ritmo, previas = cfg.previas;
+  // Llegadas: las 'previas' ya están al empezar; el resto llega cada 'ritmo' s.
+  const llegadas = cfg.notificaciones.map((n, i) => ({ ...n, t: i < previas ? -1 : (i - previas + 1) * ritmo }));
+  const dios = { app: "DIOS", texto: cfg.dios.texto, t: cfg.dios.llega, dios: true };
+  const todas = [...llegadas.filter(n => n.t < cfg.silencio), dios].sort((a, b) => a.t - b.t);
+  // Vibración al llegar cada notificación.
+  const ultima = Math.max(...todas.filter(n => n.t <= t && t < cfg.silencio).map(n => n.t), -9);
+  const vib = t - ultima < 0.18 ? Math.sin((t - ultima) * 120) * 4 : 0;
+
+  ctx.save();
+  ctx.globalAlpha = fuera;
+  // Un poco más grande que el diseño base para que se lean las notificaciones.
+  ctx.translate(540 + vib, 960); ctx.scale(1.15, 1.15); ctx.translate(-540, -960);
+  // Carcasa.
+  ctx.fillStyle = "#0c0c0f";
+  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.lineWidth = 6;
+  ctx.beginPath(); ctx.roundRect(MOVIL.x, MOVIL.y, MOVIL.w, MOVIL.h, MOVIL.r); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#000";
+  ctx.beginPath(); ctx.roundRect(540 - 60, MOVIL.y + 18, 120, 30, 15); ctx.fill();
+  // Barra de estado: hora y señal (pierde barras con el ruido).
+  ctx.font = "500 22px Montserrat"; ctx.fillStyle = "rgba(255,255,255,0.85)"; ctx.textBaseline = "middle";
+  ctx.fillText("9:41", MOVIL.x + 44, MOVIL.y + 34);
+  const ruido = suave((t - 1) / (cfg.silencio - 1.5));
+  const recupera = suave((t - cfg.silencio - 0.6) / 0.8);
+  const barras = 3 - 2 * ruido * (1 - recupera);
+  for (let i = 0; i < 3; i++) {
+    const on = i < Math.round(barras);
+    ctx.strokeStyle = on ? `rgba(${ORO_RGB},1)` : "rgba(255,255,255,0.18)";
+    ctx.lineWidth = 4; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.arc(MOVIL.x + MOVIL.w - 56, MOVIL.y + 44, 6 + i * 7, Math.PI * 1.25, Math.PI * 1.75); ctx.stroke();
+  }
+  // Recorte a la pantalla.
+  ctx.save();
+  ctx.beginPath(); ctx.roundRect(MOVIL.x + 6, MOVIL.y + 64, MOVIL.w - 12, MOVIL.h - 80, 40); ctx.clip();
+  const llegadasYa = todas.filter(n => n.t <= t);
+  const recientes = [...llegadasYa].reverse();
+  const x0 = MOVIL.x + 20, y0 = MOVIL.y + 84, hueco = 12;
+  let acumulado = 0;
+  recientes.forEach((n, k) => {
+    const entrada = n.t < 0 ? 1 : salida((t - n.t) / 0.25);
+    const alto = (n.dios ? ALTO_DIOS : ALTO_TARJETA) + hueco;
+    let y = y0 + acumulado - (1 - entrada) * alto;
+    acumulado += alto * entrada;
+    let alfa = entrada * (k < 7 ? 1 : 0);
+    let x = x0, escala = 0.96 + 0.04 * entrada, brillo = 0;
+    if (n.dios) {
+      // Enterrada mientras hay ruido; tras el silencio sube al centro y brilla.
+      alfa *= t < cfg.silencio ? 0.6 : 1;
+      if (t >= cfg.silencio) {
+        const r = salida((t - cfg.silencio - 0.5) / 0.9);
+        y = y + (1040 - y) * r; alfa = Math.max(alfa, r); escala = 1 + 0.08 * r; brillo = r;
+      }
+    } else if (t >= cfg.silencio) {
+      // Silenciar: las demás se apartan a un lado y desaparecen.
+      const s = salida((t - cfg.silencio - k * 0.04) / 0.5);
+      x += 520 * s; alfa *= 1 - s;
+    }
+    if (alfa > 0.01) tarjeta(n, x, y, alfa, escala, !!n.dios, brillo);
+  });
+  ctx.restore();
+  ctx.restore();
+}
+
+// --- ilustraciones de línea ----------------------------------------------
+function alfaIlustracion(il, t, atenuar) {
+  if (!il) return 0;
+  const [a, b] = il.intervalo;
+  if (t < a || t > b + 0.6) return 0;
+  let f = 1 - suave((t - b) / 0.6);
+  for (const [desde, nivel] of atenuar || []) if (t >= desde) f *= nivel;
+  return f;
+}
+
+// Cruce de caminos: uno hacia la luz, otro hacia la oscuridad; la silueta elige el suyo.
+const CAMINO = {
+  troncoIzq: curva([400, 1440], [470, 1300], [512, 1190]),
+  troncoDer: curva([680, 1440], [610, 1300], [568, 1190]),
+  luzA: curva([512, 1190], [430, 1080], [300, 1000]),
+  luzB: curva([540, 1175], [470, 1075], [330, 995]),
+  oscA: curva([568, 1190], [650, 1080], [780, 1000]),
+  oscB: curva([540, 1175], [610, 1075], [750, 995]),
+  picos: [[700, 1000], [740, 940], [770, 975], [810, 900], [850, 970], [880, 930], [920, 1000]],
+  horizonte: [[140, 1000], [940, 1000]],
+};
+function dibujarCamino(il, t, alfa) {
+  if (alfa <= 0) return;
+  const p = suave((t - il.intervalo[0]) / 1.8);
+  ctx.save(); ctx.globalAlpha = alfa;
+  trazo(CAMINO.horizonte, p, 2, 0.4);
+  trazo(CAMINO.troncoIzq, p * 1.3, 4); trazo(CAMINO.troncoDer, p * 1.3, 4);
+  trazo(CAMINO.luzA, p * 1.6 - 0.4, 4); trazo(CAMINO.luzB, p * 1.6 - 0.4, 4);
+  trazo(CAMINO.oscA, p * 1.6 - 0.4, 3, 0.45); trazo(CAMINO.oscB, p * 1.6 - 0.4, 3, 0.45);
+  trazo(CAMINO.picos, p * 1.6 - 0.6, 3, 0.35);
+  // La luz al final del camino de Dios.
+  const luz = suave((t - il.intervalo[0] - 1.2) / 1);
+  if (luz > 0) {
+    const g = ctx.createRadialGradient(310, 985, 0, 310, 985, 220);
+    g.addColorStop(0, `rgba(255,226,160,${0.85 * luz})`);
+    g.addColorStop(1, "rgba(255,226,160,0)");
+    ctx.fillStyle = g; ctx.fillRect(80, 760, 460, 460);
+    dibujarLogo(310, 930, 60, 1, luz);
+  }
+  // Silueta: sube por el camino y toma el de la oscuridad.
+  const s = suave((t - il.intervalo[0] - 1.4) / 3.2);
+  if (s > 0) {
+    let x, y;
+    if (s < 0.5) { const k = s / 0.5; x = 540; y = 1420 - 240 * k; }
+    else { const k = (s - 0.5) / 0.5; x = (1 - k) * (1 - k) * 540 + 2 * (1 - k) * k * 620 + k * k * 740; y = (1 - k) * (1 - k) * 1180 + 2 * (1 - k) * k * 1080 + k * k * 1005; }
+    silueta(x, y, 1 - 0.55 * s, t);
+  }
+  ctx.restore();
+}
+function silueta(x, y, esc, t) {
+  ctx.save();
+  ctx.translate(x, y); ctx.scale(esc, esc);
+  ctx.fillStyle = BLANCO; ctx.strokeStyle = BLANCO; ctx.lineWidth = 7; ctx.lineCap = "round";
+  const paso = Math.sin(t * 7) * 10;
+  ctx.beginPath(); ctx.arc(0, -78, 11, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(0, -64); ctx.lineTo(0, -28);
+  ctx.moveTo(0, -28); ctx.lineTo(-paso * 0.8, 0); ctx.moveTo(0, -28); ctx.lineTo(paso * 0.8, 0);
+  ctx.moveTo(0, -56); ctx.lineTo(paso * 0.7, -36); ctx.moveTo(0, -56); ctx.lineTo(-paso * 0.7, -36);
+  ctx.stroke();
+  ctx.restore();
+}
+
+// Muro que se derrumba "en un momento".
+const LADRILLOS = (() => {
+  const r = aleatorio(14), out = [];
+  const w = 88, h = 46, cols = 6, filas = 6, x0 = 540 - (cols * w) / 2, y0 = 1080;
+  for (let f = 0; f < filas; f++) for (let c = 0; c < cols + (f % 2); c++) {
+    const x = x0 + c * w - (f % 2 ? w / 2 : 0);
+    const xa = Math.max(x0, x), xb = Math.min(x0 + cols * w, x + w);
+    if (xb - xa < 10) continue;
+    out.push({ x: xa, y: y0 + f * h, w: xb - xa, h, fila: f,
+      retraso: r() * 0.35 + (filas - f) * 0.03, vx: (r() - 0.5) * 360, giro: (r() - 0.5) * 6 });
+  }
+  return out;
+})();
+function dibujarMuro(il, t, alfa) {
+  if (alfa <= 0) return;
+  const t0 = il.intervalo[0], cae = il.cae;
+  ctx.save(); ctx.globalAlpha = alfa;
+  ctx.strokeStyle = `rgba(${ORO_RGB},1)`; ctx.lineWidth = 3;
+  ctx.shadowColor = `rgba(${ORO_RGB},0.6)`; ctx.shadowBlur = 10;
+  for (const l of LADRILLOS) {
+    const aparece = suave((t - t0 - (5 - l.fila) * 0.16) / 0.3);
+    if (aparece <= 0) continue;
+    let x = l.x, y = l.y, rot = 0, a = aparece;
+    const dt = t - cae - l.retraso;
+    if (dt > 0) { x += l.vx * dt; y += 0.5 * 2600 * dt * dt; rot = l.giro * dt; a *= 1 - suave((dt - 0.5) / 0.6); }
+    if (a <= 0) continue;
+    ctx.save(); ctx.globalAlpha = alfa * a;
+    ctx.translate(x + l.w / 2, y + l.h / 2); ctx.rotate(rot);
+    ctx.strokeRect(-l.w / 2 + 3, -l.h / 2 + 3, l.w - 6, l.h - 6);
+    ctx.restore();
+  }
+  // Destello de luz donde estaba el muro.
+  const luz = suave((t - cae - 0.3) / 0.8) * (1 - suave((t - cae - 1.8) / 1));
+  if (luz > 0) {
+    const g = ctx.createRadialGradient(540, 1220, 0, 540, 1220, 420);
+    g.addColorStop(0, `rgba(255,226,160,${0.6 * luz})`);
+    g.addColorStop(1, "rgba(255,226,160,0)");
+    ctx.fillStyle = g; ctx.fillRect(0, 800, W, 900);
+  }
+  ctx.restore();
+}
+
+// Trigo que crece y miel que gotea de la peña.
+const ESPIGAS = (() => {
+  const r = aleatorio(16);
+  return Array.from({ length: 19 }, (_, i) => ({ x: 170 + i * 41 + (r() - 0.5) * 14, alto: 250 + r() * 140, fase: r() * 6.3, retraso: r() * 0.5 }));
+})();
+const PENA = [[400, 960], [420, 880], [480, 840], [560, 830], [640, 850], [690, 900], [700, 960], [640, 990], [540, 1000], [450, 990], [400, 960]];
+function dibujarTrigo(il, t, alfa) {
+  if (alfa <= 0) return;
+  const t0 = il.intervalo[0];
+  ctx.save(); ctx.globalAlpha = alfa;
+  // Peña con panal.
+  const pp = suave((t - t0) / 1.2);
+  ctx.save();
+  ctx.fillStyle = `rgba(30,22,12,${0.9 * pp})`;
+  ctx.beginPath(); PENA.forEach((p, i) => (i ? ctx.lineTo(...p) : ctx.moveTo(...p))); ctx.fill();
+  ctx.restore();
+  trazo(PENA, pp, 4);
+  const panal = suave((t - t0 - 0.8) / 0.8);
+  if (panal > 0) {
+    ctx.save();
+    ctx.strokeStyle = `rgba(${MIEL.join(",")},${panal})`; ctx.lineWidth = 3;
+    ctx.fillStyle = `rgba(${MIEL.join(",")},${0.35 * panal})`;
+    for (const [cx, cy] of [[510, 900], [548, 922], [586, 900], [548, 878], [510, 944], [586, 944]]) {
+      ctx.beginPath();
+      for (let k = 0; k < 6; k++) { const a = Math.PI / 3 * k; const px = cx + 22 * Math.cos(a), py = cy + 22 * Math.sin(a); k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  // Gotas de miel.
+  const miel = suave((t - t0 - 1.2) / 0.6);
+  if (miel > 0) {
+    for (const [gx, fase] of [[470, 0], [548, 0.55], [622, 1.1]]) {
+      const ciclo = ((t - t0 - 1.2 + fase) % 1.8 + 1.8) % 1.8;
+      const largo = Math.min(1, ciclo / 0.9) * 26;
+      const caida = ciclo > 0.9 ? 0.5 * 1800 * (ciclo - 0.9) ** 2 : 0;
+      ctx.save();
+      ctx.fillStyle = `rgba(${MIEL.join(",")},${miel})`;
+      ctx.shadowColor = `rgba(${MIEL.join(",")},0.9)`; ctx.shadowBlur = 18;
+      const yb = 995 - (gx - 548) * (gx - 548) * 0.0006;
+      ctx.beginPath(); ctx.ellipse(gx, yb + largo / 2, 7, largo / 2 + 4, 0, 0, Math.PI * 2); ctx.fill();
+      if (caida > 0 && yb + 40 + caida < 1260) {
+        ctx.beginPath(); ctx.ellipse(gx, yb + 40 + caida, 8, 11, 0, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.restore();
+    }
+  }
+  // Espigas.
+  ESPIGAS.forEach((e, i) => {
+    const p = salida((t - t0 - 0.3 - e.retraso - i * 0.03) / 1.4);
+    if (p <= 0) return;
+    const base = 1440, alto = e.alto * p;
+    const vaiven = Math.sin(t * 1.4 + e.fase) * 12 * p;
+    const top = [e.x + vaiven, base - alto];
+    trazo(curva([e.x, base], [e.x + vaiven * 0.3, base - alto * 0.6], top, 16), 1, 3, 0.9);
+    const grano = suave((p - 0.6) / 0.4);
+    if (grano > 0) {
+      ctx.save();
+      ctx.fillStyle = `rgba(232,190,110,${grano})`;
+      ctx.shadowColor = `rgba(${ORO_RGB},0.6)`; ctx.shadowBlur = 8;
+      for (let k = 0; k < 6; k++) {
+        const gy = top[1] + 12 + k * 13, gx = top[0] - vaiven * 0.05 * k;
+        for (const lado of [-1, 1]) {
+          ctx.beginPath(); ctx.ellipse(gx + lado * 7, gy, 5 * grano, 10 * grano, lado * 0.5, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      ctx.beginPath(); ctx.ellipse(top[0], top[1] + 2, 4 * grano, 9 * grano, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+  });
+  ctx.restore();
+}
+
+function dibujarInvitacion(inv, t) {
+  if (!inv) return;
+  const p = suave((t - inv.desde) / 0.6) * (1 - suave((t - inv.hasta + 0.5) / 0.5));
+  if (p > 0) dibujarLinea(inv.texto, "referencia", 540, 1500, p * 0.9, 0);
+}
+
+iniciarPlantilla((guion, t) => {
+  const cfg = guion.escucha;
+  dibujarFondo(t);
+  const esc = escenaEn(guion, t);
+  if (esc.tipo === "cierre") return dibujarCierre(esc, t);
+  dibujarTelefono(cfg.telefono, t);
+  const il = cfg.ilustraciones;
+  dibujarCamino(il.camino, t, alfaIlustracion(il.camino, t));
+  dibujarMuro(il.muro, t, alfaIlustracion(il.muro, t));
+  dibujarTrigo(il.trigo, t, alfaIlustracion(il.trigo, t, il.trigo.atenuar));
+  dibujarLogo(540, 250, 70, 1, 0.55);
+  dibujarEscenaTexto(esc, t);
+  dibujarInvitacion(cfg.invitacion, t);
+});
+</script>
+</body>
+</html>
