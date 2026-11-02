@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Muestras de estilos — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body class="render">
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Muestras estáticas de tres estilos visuales nuevos, para elegir antes de
+// construir la plantilla definitiva. Uso: ?estilo=pergamino|vitral|papel&escena=trono|puerta
+
+const P = new URLSearchParams(location.search);
+const ESTILO = P.get("estilo") || "pergamino";
+const ESCENA = P.get("escena") || "trono";
+
+// --- utilidades ---------------------------------------------------------
+function subdividir(pts, paso = 14) {
+  const out = [];
+  for (let i = 0; i < pts.length - 1; i++) {
+    const [x0, y0] = pts[i], [x1, y1] = pts[i + 1];
+    const n = Math.max(1, Math.round(Math.hypot(x1 - x0, y1 - y0) / paso));
+    for (let k = 0; k < n; k++) out.push([x0 + (x1 - x0) * k / n, y0 + (y1 - y0) * k / n]);
+  }
+  out.push(pts[pts.length - 1]);
+  return out;
+}
+function arcoPts(cx, cy, r, a0, a1, n = 40) {
+  return Array.from({ length: n + 1 }, (_, i) => { const a = a0 + (a1 - a0) * i / n; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; });
+}
+function camino(pts, cerrar = true) {
+  ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(...p) : ctx.moveTo(...p))); if (cerrar) ctx.closePath();
+}
+function texto(lineas, y, opciones) {
+  const { fuente, color, colorEnfasis, alto, sombra } = opciones;
+  let yy = y;
+  for (const l of lineas) {
+    ctx.save();
+    ctx.font = l.enfasis ? opciones.fuenteEnfasis || fuente : fuente;
+    ctx.fillStyle = l.enfasis ? colorEnfasis : color;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    if (sombra) { ctx.shadowColor = sombra; ctx.shadowBlur = 20; }
+    ctx.fillText(l.t, 540, yy);
+    ctx.restore();
+    yy += alto;
+  }
+}
+const TEXTOS = {
+  trono: [{ t: "¿Quién se sienta" }, { t: "en el trono", enfasis: true }, { t: "de tu vida?" }],
+  puerta: [{ t: "Llamando a una puerta…" }, { t: "que ya lleva", enfasis: true }, { t: "su nombre.", enfasis: true }],
+};
+
+// Geometría común del trono y de la puerta.
+const TRONO = {
+  respaldo: [[430, 1180], [430, 900], ...arcoPts(540, 900, 110, Math.PI, 2 * Math.PI, 30), [650, 1180]],
+  asiento: [[380, 1180], [700, 1180], [700, 1245], [380, 1245]],
+  brazoI: [[380, 1060], [430, 1060], [430, 1180], [380, 1180]],
+  brazoD: [[650, 1060], [700, 1060], [700, 1180], [650, 1180]],
+  pataI: [[392, 1245], [420, 1245], [420, 1430], [392, 1430]],
+  pataD: [[660, 1245], [688, 1245], [688, 1430], [660, 1430]],
+  corona: [[490, 790], [505, 745], [522, 775], [540, 730], [558, 775], [575, 745], [590, 790]],
+  moneda: [540, 1095, 78],
+};
+const PUERTA = {
+  marco: [[400, 1430], [400, 980], ...arcoPts(560, 980, 160, Math.PI, 2 * Math.PI, 36), [720, 1430]],
+  hoja: [[420, 1430], [420, 990], ...arcoPts(560, 990, 140, Math.PI, 2 * Math.PI, 36), [700, 1430]],
+  placa: [[500, 1060], [620, 1060], [620, 1100], [500, 1100]],
+};
+function figura(x, y, esc) {
+  // Silueta original sencilla: cabeza, cuerpo y brazo extendido hacia la puerta.
+  return {
+    cabeza: [x, y - 168 * esc, 26 * esc],
+    cuerpo: [[x - 34 * esc, y - 130 * esc], [x + 34 * esc, y - 130 * esc], [x + 44 * esc, y - 20 * esc], [x + 22 * esc, y], [x - 22 * esc, y], [x - 44 * esc, y - 20 * esc]],
+    brazo: [[x + 26 * esc, y - 118 * esc], [x + 96 * esc, y - 150 * esc]],
+    llave: [x - 52 * esc, y - 70 * esc],
+  };
+}
+
+// --- A. PERGAMINO Y TINTA -----------------------------------------------
+function pergamino() {
+  const r = aleatorio(7);
+  ctx.fillStyle = "#efe3c8"; ctx.fillRect(0, 0, W, H);
+  // Fibras y manchas del papel.
+  for (let i = 0; i < 2600; i++) {
+    ctx.fillStyle = `rgba(120,90,50,${r() * 0.06})`;
+    ctx.fillRect(r() * W, r() * H, 1 + r() * 3, 1 + r() * 2);
+  }
+  let g = ctx.createRadialGradient(540, 960, 400, 540, 960, 1250);
+  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(1, "rgba(110,70,30,0.45)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // Marco ornamental fino.
+  ctx.strokeStyle = "rgba(90,55,25,0.55)"; ctx.lineWidth = 3;
+  ctx.strokeRect(60, 60, W - 120, H - 120);
+  ctx.lineWidth = 1.5; ctx.strokeRect(76, 76, W - 152, H - 152);
+
+  const TINTA = "#2b1d12", ORO_HOJA = "#b88a2e", ROJO = "#8b2a1e";
+  const trazo = (pts, ancho = 4, cerrar = true, pasadas = 2) => {
+    for (let p = 0; p < pasadas; p++) {
+      const sub = subdividir(cerrar ? [...pts, pts[0]] : pts).map(([x, y]) => [x + (r() - 0.5) * 3, y + (r() - 0.5) * 3]);
+      ctx.strokeStyle = TINTA; ctx.globalAlpha = p ? 0.55 : 0.95; ctx.lineWidth = p ? ancho * 0.6 : ancho;
+      ctx.lineCap = ctx.lineJoin = "round";
+      camino(sub, false); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+  };
+  const sombreado = (pts, sep = 14, ang = 1) => {
+    ctx.save(); camino(pts); ctx.clip();
+    ctx.strokeStyle = "rgba(43,29,18,0.45)"; ctx.lineWidth = 1.6;
+    for (let x = -1200; x < 1200; x += sep) { ctx.beginPath(); ctx.moveTo(x, 600); ctx.lineTo(x + 900 * ang, 1600); ctx.stroke(); }
+    ctx.restore();
+  };
+  if (ESCENA === "trono") {
+    // Suelo con rayado.
+    trazo([[260, 1430], [820, 1430]], 3, false);
+    for (let i = 0; i < 9; i++) trazo([[300 + i * 60, 1445], [280 + i * 60, 1470]], 1.5, false, 1);
+    for (const k of ["pataI", "pataD", "respaldo", "brazoI", "brazoD", "asiento"]) {
+      ctx.fillStyle = "rgba(239,227,200,0.9)"; camino(TRONO[k]); ctx.fill();
+      sombreado(TRONO[k], k === "respaldo" ? 18 : 12, k === "asiento" ? -1 : 1);
+      trazo(TRONO[k], 4);
+    }
+    trazo(TRONO.corona, 4, false);
+    ctx.fillStyle = ORO_HOJA; camino(TRONO.corona.concat([[590, 795], [490, 795]])); ctx.fill();
+    // Moneda con pan de oro.
+    const [mx, my, mr] = TRONO.moneda;
+    g = ctx.createRadialGradient(mx - 25, my - 25, 5, mx, my, mr);
+    g.addColorStop(0, "#f3d98a"); g.addColorStop(1, ORO_HOJA);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill();
+    trazo(arcoPts(mx, my, mr, 0, Math.PI * 2, 48), 4);
+    trazo(arcoPts(mx, my, mr - 16, 0, Math.PI * 2, 40), 2, true, 1);
+    for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * 2 * Math.PI / 5; trazo([[mx, my], [mx + 30 * Math.cos(a), my + 30 * Math.sin(a)]], 2.5, false, 1); }
+  } else {
+    trazo([[220, 1430], [860, 1430]], 3, false);
+    ctx.fillStyle = "rgba(239,227,200,0.9)"; camino(PUERTA.marco); ctx.fill();
+    sombreado(PUERTA.hoja, 16, 1);
+    trazo(PUERTA.marco, 5); trazo(PUERTA.hoja, 3);
+    trazo(PUERTA.placa, 2.5);
+    trazo([[530, 1080], [590, 1080]], 2, false, 1);
+    trazo([[690, 1230], [690, 1250]], 6, false, 1);
+    const f = figura(250, 1430, 1.05);
+    ctx.fillStyle = TINTA;
+    ctx.beginPath(); ctx.arc(...f.cabeza, 0, Math.PI * 2); ctx.fill();
+    camino(f.cuerpo); ctx.fill();
+    trazo(f.brazo, 14, false, 1);
+    // La llave en su mano, con pan de oro.
+    const [lx, ly] = f.llave;
+    ctx.fillStyle = ORO_HOJA; ctx.shadowColor = "rgba(184,138,46,0.8)"; ctx.shadowBlur = 25;
+    ctx.beginPath(); ctx.arc(lx, ly, 16, 0, Math.PI * 2); ctx.fill();
+    ctx.fillRect(lx - 4, ly + 12, 8, 50); ctx.fillRect(lx, ly + 48, 16, 6); ctx.fillRect(lx, ly + 36, 12, 6);
+    ctx.shadowBlur = 0;
+  }
+  // Letra capital roja, como un manuscrito iluminado.
+  texto(TEXTOS[ESCENA], 420, { fuente: "500 92px Cormorant", fuenteEnfasis: "600 112px Cormorant", color: TINTA, colorEnfasis: ROJO, alto: 118 });
+  ctx.font = "500 26px Montserrat"; ctx.letterSpacing = "8px"; ctx.fillStyle = "rgba(43,29,18,0.7)"; ctx.textAlign = "center";
+  ctx.fillText("CON ALMA DEL CREADOR", 540, 1700);
+}
+
+// --- B. VITRAL ---------------------------------------------------------
+function vitral() {
+  const r = aleatorio(11);
+  ctx.fillStyle = "#0b0a10"; ctx.fillRect(0, 0, W, H);
+  const cx = 540, cy = 1060, rad = 400, base = 1560;
+  const arco = () => { ctx.beginPath(); ctx.moveTo(cx - rad, base); ctx.lineTo(cx - rad, cy); ctx.arc(cx, cy, rad, Math.PI, 2 * Math.PI); ctx.lineTo(cx + rad, base); ctx.closePath(); };
+  // Teselado de vidrio: rejilla irregular.
+  const paso = 78, cols = 13, filas = 13, x0 = cx - rad - 20, y0 = cy - rad - 20;
+  const pts = [];
+  for (let j = 0; j <= filas; j++) { pts.push([]); for (let i = 0; i <= cols; i++) pts[j].push([x0 + i * paso + (i && i < cols ? (r() - 0.5) * 44 : 0), y0 + j * paso + (j && j < filas ? (r() - 0.5) * 44 : 0)]); }
+  const luz = ESCENA === "trono" ? [540, 980] : [560, 1060];
+  ctx.save(); arco(); ctx.clip();
+  for (let j = 0; j < filas; j++) for (let i = 0; i < cols; i++) {
+    const q = [pts[j][i], pts[j][i + 1], pts[j + 1][i + 1], pts[j + 1][i]];
+    const mx = q.reduce((s, p) => s + p[0], 0) / 4, my = q.reduce((s, p) => s + p[1], 0) / 4;
+    const d = Math.hypot(mx - luz[0], my - luz[1]) / 520;
+    const paleta = d < 0.35 ? ["#ffd36b", "#f7b84b", "#ffe39a"] : d < 0.7 ? ["#2f6fb3", "#4a3f9c", "#2b8a8a", "#7a2f86"] : ["#1b2f6b", "#341f63", "#14435c", "#5a1838"];
+    ctx.fillStyle = paleta[Math.floor(r() * paleta.length)];
+    camino(q); ctx.fill();
+    ctx.strokeStyle = "#0b0a10"; ctx.lineWidth = 7; ctx.stroke();
+  }
+  // Rayos de luz atravesando el vidrio.
+  ctx.globalCompositeOperation = "lighter";
+  const g = ctx.createRadialGradient(...luz, 0, ...luz, 520);
+  g.addColorStop(0, "rgba(255,220,140,0.5)"); g.addColorStop(1, "rgba(255,220,140,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.globalCompositeOperation = "source-over";
+  const vidrio = (pts, color, plomo = 12) => { ctx.fillStyle = color; camino(pts); ctx.fill(); ctx.strokeStyle = "#0b0a10"; ctx.lineWidth = plomo; ctx.stroke(); };
+  if (ESCENA === "trono") {
+    for (const [k, c] of [["pataI", "#7a1f2b"], ["pataD", "#7a1f2b"], ["respaldo", "#a32638"], ["brazoI", "#c0392b"], ["brazoD", "#c0392b"], ["asiento", "#8e1f30"]]) vidrio(TRONO[k], c);
+    // Divisiones de plomo dentro del respaldo.
+    ctx.strokeStyle = "#0b0a10"; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(540, 790); ctx.lineTo(540, 1180); ctx.moveTo(430, 960); ctx.lineTo(650, 960); ctx.stroke();
+    vidrio(TRONO.corona.concat([[590, 800], [490, 800]]), "#ffd36b", 8);
+    const [mx, my, mr] = TRONO.moneda;
+    ctx.shadowColor = "rgba(255,210,100,0.9)"; ctx.shadowBlur = 50;
+    ctx.fillStyle = "#ffd36b"; ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill();
+    ctx.shadowBlur = 0; ctx.lineWidth = 12; ctx.strokeStyle = "#0b0a10"; ctx.stroke();
+    ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(mx, my, mr - 22, 0, Math.PI * 2); ctx.stroke();
+  } else {
+    vidrio(PUERTA.marco, "#5a3a1e");
+    vidrio(PUERTA.hoja, "#8a5a2b", 10);
+    ctx.strokeStyle = "#0b0a10"; ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.moveTo(560, 850); ctx.lineTo(560, 1430); ctx.moveTo(420, 1150); ctx.lineTo(700, 1150); ctx.moveTo(420, 1300); ctx.lineTo(700, 1300); ctx.stroke();
+    vidrio(PUERTA.placa, "#ffe39a", 6);
+    const f = figura(250, 1430, 1.05);
+    ctx.fillStyle = "#0b0a10";
+    ctx.beginPath(); ctx.arc(...f.cabeza, 0, Math.PI * 2); ctx.fill(); camino(f.cuerpo); ctx.fill();
+    ctx.strokeStyle = "#0b0a10"; ctx.lineWidth = 16; ctx.lineCap = "round"; camino(f.brazo, false); ctx.stroke();
+    const [lx, ly] = f.llave;
+    ctx.shadowColor = "rgba(255,210,100,1)"; ctx.shadowBlur = 40; ctx.fillStyle = "#ffd36b";
+    ctx.beginPath(); ctx.arc(lx, ly, 18, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(lx - 5, ly + 12, 10, 52); ctx.fillRect(lx, ly + 48, 18, 7);
+    ctx.shadowBlur = 0;
+  }
+  ctx.restore();
+  // Marco de piedra del ventanal.
+  arco(); ctx.strokeStyle = "#3a3540"; ctx.lineWidth = 26; ctx.stroke();
+  arco(); ctx.strokeStyle = "rgba(212,175,106,0.7)"; ctx.lineWidth = 3; ctx.stroke();
+  texto(TEXTOS[ESCENA], 360, { fuente: "500 88px Cormorant", fuenteEnfasis: "600 106px Cormorant", color: "#f4efe6", colorEnfasis: "#ffd36b", alto: 112, sombra: "rgba(255,200,120,0.35)" });
+  dibujarLogo(540, 1660, 90, 1, 0.8);
+}
+
+// --- C. PAPEL RECORTADO --------------------------------------------------
+function papel() {
+  const r = aleatorio(5);
+  let g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#f6ead6"); g.addColorStop(0.55, "#f3cfa8"); g.addColorStop(1, "#e9a77c");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // Sol de papel.
+  ctx.save(); ctx.shadowColor = "rgba(120,60,30,0.3)"; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10;
+  ctx.fillStyle = "#fbe7b8"; ctx.beginPath(); ctx.arc(540, 980, 230, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  const capa = (base, amp, frec, fase, color, sombra = 0.35) => {
+    ctx.save(); ctx.shadowColor = `rgba(60,25,15,${sombra})`; ctx.shadowBlur = 34; ctx.shadowOffsetY = -6;
+    ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, H);
+    for (let x = 0; x <= W; x += 8) ctx.lineTo(x, base + amp * Math.sin(x * frec + fase) + amp * 0.4 * Math.sin(x * frec * 2.3 + fase * 2));
+    ctx.lineTo(W, H); ctx.closePath(); ctx.fill(); ctx.restore();
+  };
+  capa(1250, 50, 0.006, 0.5, "#e7b48a");
+  capa(1360, 40, 0.008, 2.1, "#d98a5f");
+  const TEAL = "#1f4e5a";
+  const recorte = (pts, color, sombra = 0.4) => { ctx.save(); ctx.shadowColor = `rgba(40,20,10,${sombra})`; ctx.shadowBlur = 28; ctx.shadowOffsetY = 12; ctx.fillStyle = color; camino(pts); ctx.fill(); ctx.restore(); };
+  if (ESCENA === "trono") {
+    for (const k of ["pataI", "pataD", "respaldo", "brazoI", "brazoD", "asiento"]) recorte(TRONO[k], TEAL);
+    recorte(TRONO.corona.concat([[590, 800], [490, 800]]), "#d4a24a");
+    const [mx, my, mr] = TRONO.moneda;
+    ctx.save(); ctx.shadowColor = "rgba(40,20,10,0.45)"; ctx.shadowBlur = 24; ctx.shadowOffsetY = 10;
+    ctx.fillStyle = "#e3b04f"; ctx.beginPath(); ctx.arc(mx, my, mr, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    ctx.fillStyle = "#f2cf7a"; ctx.beginPath(); ctx.arc(mx, my, mr - 18, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#e3b04f"; ctx.beginPath(); ctx.arc(mx, my, mr - 34, 0, Math.PI * 2); ctx.fill();
+  } else {
+    // Colina con la puerta recortada que deja pasar la luz.
+    recorte([[0, 1500], [0, 1150], [200, 1080], [420, 900], [700, 880], [900, 1000], [1080, 1080], [1080, 1500]], "#b5573f", 0.35);
+    ctx.save(); ctx.shadowColor = "rgba(255,240,200,0.9)"; ctx.shadowBlur = 60;
+    ctx.fillStyle = "#fff4d6"; camino(PUERTA.hoja); ctx.fill(); ctx.restore();
+    ctx.strokeStyle = "rgba(60,25,15,0.35)"; ctx.lineWidth = 6; camino(PUERTA.marco); ctx.stroke();
+    recorte(PUERTA.placa, "#d4a24a", 0.25);
+    const f = figura(250, 1430, 1.05);
+    ctx.save(); ctx.shadowColor = "rgba(40,20,10,0.45)"; ctx.shadowBlur = 22; ctx.shadowOffsetY = 10; ctx.fillStyle = TEAL;
+    ctx.beginPath(); ctx.arc(...f.cabeza, 0, Math.PI * 2); ctx.fill(); camino(f.cuerpo); ctx.fill();
+    ctx.strokeStyle = TEAL; ctx.lineWidth = 16; ctx.lineCap = "round"; camino(f.brazo, false); ctx.stroke(); ctx.restore();
+    const [lx, ly] = f.llave;
+    ctx.save(); ctx.shadowColor = "rgba(255,210,120,0.9)"; ctx.shadowBlur = 30; ctx.fillStyle = "#e3b04f";
+    ctx.beginPath(); ctx.arc(lx, ly, 17, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(lx - 4, ly + 12, 8, 50); ctx.fillRect(lx, ly + 48, 16, 6); ctx.restore();
+  }
+  capa(1480, 30, 0.01, 4.0, "#8f3b2c");
+  capa(1600, 26, 0.012, 1.0, TEAL, 0.45);
+  // Grano del papel.
+  for (let i = 0; i < 3000; i++) { ctx.fillStyle = `rgba(255,255,255,${r() * 0.07})`; ctx.fillRect(r() * W, r() * H, 1.5, 1.5); }
+  texto(TEXTOS[ESCENA], 380, { fuente: "500 90px Cormorant", fuenteEnfasis: "600 110px Cormorant", color: "#1f3b44", colorEnfasis: "#a3442d", alto: 116 });
+}
+
+(async () => {
+  for (const f of ["500 92px Cormorant", "600 112px Cormorant", "500 26px Montserrat"]) await document.fonts.load(f);
+  ({ pergamino, vitral, papel })[ESTILO]();
+  document.body.dataset.listo = "1";
+})();
+</script>
+</body>
+</html>
