@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plantilla roca (papel recortado) — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body>
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Plantilla "roca", estilo papel recortado: dos talleres iguales, uno sobre
+// arena y otro sobre roca (Mateo 7:24-27). Llega la tormenta, el de arena cae
+// y el de roca queda en pie; al final sale el sol. El texto va sobre una
+// tarjeta de papel para que se lea con cualquier cielo.
+// Uso: roca.html?guion=../guiones/07-roca.json
+// Tiempos en guion.roca: tormenta, colapso, sol.
+
+const TEAL = "#1f4e5a", TERRACOTA = "#a3442d", CREMA = "#f6ead6", ORO_PAPEL = "#e3b04f";
+ESTILOS.grande.color = ESTILOS.normal.color = ESTILOS.cita.color = "#1f3b44";
+ESTILOS.oro.color = ESTILOS.oroGrande.color = ESTILOS.referencia.color = TERRACOTA;
+ESTILOS.cita.fuente = "italic 500 74px Cormorant"; ESTILOS.cita.alto = 86;
+SOMBRA_TEXTO = "rgba(0,0,0,0)";
+
+const mezclar = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+const rgb = (c, a = 1) => `rgba(${c.map(Math.round).join(",")},${a})`;
+const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+
+function sombraPapel(f = 1) {
+  ctx.shadowColor = `rgba(40,20,10,${0.35 * f})`; ctx.shadowBlur = 26; ctx.shadowOffsetY = 10;
+}
+function sinSombra() { ctx.shadowColor = "transparent"; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0; }
+function poligono(pts) { ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(...p) : ctx.moveTo(...p))); ctx.closePath(); }
+
+// Grano del papel (se precalcula una vez).
+const GRANO = document.createElement("canvas");
+GRANO.width = W; GRANO.height = H;
+{
+  const g = GRANO.getContext("2d"), r = aleatorio(3);
+  for (let i = 0; i < 9000; i++) { g.fillStyle = `rgba(255,255,255,${r() * 0.06})`; g.fillRect(r() * W, r() * H, 1.6, 1.6); }
+  for (let i = 0; i < 5000; i++) { g.fillStyle = `rgba(60,30,10,${r() * 0.035})`; g.fillRect(r() * W, r() * H, 1.4, 1.4); }
+}
+
+// --- estado de la escena --------------------------------------------------
+function estado(cfg, t) {
+  const [ti, tf] = cfg.tormenta, [si] = cfg.sol;
+  const oscuro = suave((t - ti) / 1.6) * (1 - suave((t - (tf - 1)) / 4));
+  const lluvia = suave((t - ti - 1) / 1) * (1 - suave((t - tf + 2) / 3));
+  const agua = suave((t - ti - 1.5) / 4) * (1 - suave((t - tf) / 5));
+  const sol = suave((t - si) / 3.5);
+  return { oscuro, lluvia, agua, sol };
+}
+
+// --- cielo, sol, nubes y colinas -----------------------------------------
+const CALMA = [[246, 234, 214], [243, 207, 168]];
+const TORMENTA = [[74, 88, 104], [128, 132, 140]];
+const CLARO = [[250, 228, 190], [242, 178, 128]];
+function dibujarCielo(e, t) {
+  const arriba = mezclar(mezclar(CALMA[0], TORMENTA[0], e.oscuro), CLARO[0], e.sol * (1 - e.oscuro));
+  const abajo = mezclar(mezclar(CALMA[1], TORMENTA[1], e.oscuro), CLARO[1], e.sol * (1 - e.oscuro));
+  const g = ctx.createLinearGradient(0, 0, 0, 1300);
+  g.addColorStop(0, rgb(arriba)); g.addColorStop(1, rgb(abajo));
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  // Sol de papel que sale detrás de la roca.
+  if (e.sol > 0) {
+    const y = 1180 - 270 * e.sol;
+    ctx.save();
+    ctx.translate(780, y); ctx.rotate(t * 0.05);
+    ctx.fillStyle = `rgba(255,236,190,${0.55 * e.sol})`;
+    for (let i = 0; i < 12; i++) { ctx.rotate(Math.PI / 6); poligono([[-18, -170], [18, -170], [0, -300]]); ctx.fill(); }
+    ctx.restore();
+    ctx.save(); sombraPapel(0.6);
+    ctx.fillStyle = "#fbe2a6"; ctx.beginPath(); ctx.arc(780, y, 150, 0, Math.PI * 2); ctx.fill();
+    sinSombra(); ctx.fillStyle = "#fdeec4"; ctx.beginPath(); ctx.arc(780, y, 112, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+}
+function nube(x, y, esc, color, sombra = 1) {
+  ctx.save(); sombraPapel(sombra); ctx.fillStyle = color;
+  ctx.beginPath();
+  for (const [dx, dy, r] of [[-110, 20, 60], [-50, -15, 80], [30, -30, 95], [110, 0, 70], [160, 30, 50], [0, 35, 70]]) {
+    ctx.moveTo(x + dx * esc + r * esc, y + dy * esc); ctx.arc(x + dx * esc, y + dy * esc, r * esc, 0, Math.PI * 2);
+  }
+  ctx.fill(); ctx.restore();
+}
+function dibujarNubes(e, t, cfg) {
+  // Nubes claras de calma, a la deriva.
+  const claras = 1 - e.oscuro;
+  if (claras > 0.02) {
+    ctx.save(); ctx.globalAlpha = claras;
+    nube(((180 + t * 14) % 1400) - 200, 820, 0.55, "#fbf3e4", 0.5);
+    nube(((820 + t * 9) % 1400) - 200, 760, 0.45, "#fbf3e4", 0.5);
+    ctx.restore();
+  }
+  // Nubes de tormenta: entran desde arriba y se marchan al salir el sol.
+  if (e.oscuro > 0.01) {
+    const [ti] = cfg.tormenta;
+    const entra = salida((t - ti) / 1.8), sale = suave((t - cfg.sol[0]) / 3);
+    const colores = ["#3e4a57", "#4f5b68", "#5d6876"];
+    [[250, 760, 1.25], [640, 700, 1.4], [940, 800, 1.1], [420, 880, 1.0], [800, 900, 0.95]].forEach(([x, y, s], i) => {
+      const dx = sale * (i % 2 ? 900 : -900);
+      nube(x + dx + Math.sin(t * 0.6 + i) * 10, y - 500 * (1 - entra), s, colores[i % 3], 1.2);
+    });
+  }
+}
+function colinas(e) {
+  const capa = (base, amp, f, fase, color) => {
+    ctx.save(); sombraPapel(0.8); ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, H);
+    for (let x = 0; x <= W; x += 10) ctx.lineTo(x, base + amp * Math.sin(x * f + fase) + amp * 0.4 * Math.sin(x * f * 2.3 + fase * 2));
+    ctx.lineTo(W, H); ctx.closePath(); ctx.fill(); ctx.restore();
+  };
+  const gris = [96, 106, 116];
+  capa(1130, 40, 0.006, 0.5, rgb(mezclar(hex("#e7b48a"), gris, e.oscuro * 0.7)));
+  capa(1200, 32, 0.008, 2.1, rgb(mezclar(hex("#d98a5f"), gris, e.oscuro * 0.6)));
+}
+
+// --- suelo: arena y roca -------------------------------------------------
+// Duna con la cima plana y laderas suaves; la erosión la rebaja y estrecha.
+function cimaArena(x, erosion) {
+  const alto = 230 * (1 - 0.55 * erosion), ancho = 200 * (1 - 0.2 * erosion);
+  return 1460 - alto * Math.exp(-(((x - 300) / ancho) ** 4));
+}
+function dibujarArena(erosion, e) {
+  ctx.save(); sombraPapel();
+  ctx.fillStyle = rgb(mezclar(hex("#e6c491"), [150, 140, 120], e.oscuro * 0.4));
+  ctx.beginPath(); ctx.moveTo(-20, 1460);
+  for (let x = -20; x <= 620; x += 8) ctx.lineTo(x, cimaArena(x, erosion));
+  ctx.lineTo(620, 1460); ctx.closePath(); ctx.fill();
+  sinSombra();
+  // Ondas de la arena.
+  ctx.strokeStyle = "rgba(160,110,60,0.35)"; ctx.lineWidth = 3;
+  for (let k = 0; k < 3; k++) {
+    ctx.beginPath();
+    for (let x = 160; x <= 440; x += 8) { const y = cimaArena(x, erosion) + 40 + k * 38 + Math.sin(x * 0.05 + k) * 5; x === 160 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+const ROCA = [[600, 1460], [612, 1290], [660, 1235], [720, 1215], [850, 1212], [920, 1240], [960, 1300], [975, 1460]];
+const FACETAS = [[[660, 1235], [720, 1215], [700, 1320], [612, 1290]], [[850, 1212], [920, 1240], [880, 1340], [800, 1300]], [[700, 1320], [800, 1300], [880, 1340], [820, 1460], [690, 1460]]];
+function dibujarRoca(e) {
+  ctx.save(); sombraPapel(1.2);
+  ctx.fillStyle = rgb(mezclar(hex("#6f7a7c"), [70, 76, 80], e.oscuro * 0.4)); poligono(ROCA); ctx.fill();
+  sinSombra();
+  FACETAS.forEach((f, i) => { ctx.fillStyle = ["rgba(255,255,255,0.10)", "rgba(0,0,0,0.10)", "rgba(255,255,255,0.05)"][i]; poligono(f); ctx.fill(); });
+  ctx.restore();
+}
+
+// --- talleres (idénticos; solo cambia el cimiento) -----------------------
+function piezasTaller(cx, base) {
+  const w = 220, h = 170;
+  return {
+    cuerpo: [[cx - w / 2, base], [cx - w / 2, base - h], [cx + w / 2, base - h], [cx + w / 2, base]],
+    tejado: [[cx - w / 2 - 26, base - h + 4], [cx, base - h - 110], [cx + w / 2 + 26, base - h + 4]],
+    puerta: [[cx - 26, base], [cx - 26, base - 88], [cx + 26, base - 88], [cx + 26, base]],
+    ventana: [[cx + 46, base - 120], [cx + 46, base - 70], [cx + 92, base - 70], [cx + 92, base - 120]],
+    letrero: [[cx - 70, base - 150], [cx + 10, base - 150], [cx + 10, base - 106], [cx - 70, base - 106]],
+  };
+}
+const COLORES = { cuerpo: "#f1dfc0", tejado: "#b5573f", puerta: TEAL, ventana: "#fbe7b8", letrero: "#fff6e2" };
+function dibujarTaller(cx, base, simbolo, brillo, colapso, t) {
+  const p = piezasTaller(cx, base);
+  const r = aleatorio(simbolo === "moneda" ? 9 : 4);
+  for (const k of ["cuerpo", "tejado", "puerta", "ventana", "letrero"]) {
+    const pts = p[k];
+    const c = pts.reduce((s, q) => [s[0] + q[0] / pts.length, s[1] + q[1] / pts.length], [0, 0]);
+    const vx = (r() - 0.5) * 260, giro = (r() - 0.5) * 2.4, retraso = r() * 0.25;
+    ctx.save();
+    if (colapso !== null) {
+      const dt = Math.max(0, colapso - retraso);
+      ctx.translate(c[0] + vx * 0.5 * dt, c[1] + 0.5 * 260 * dt * dt); ctx.rotate(giro * 0.5 * dt); ctx.translate(-c[0], -c[1]);
+      ctx.globalAlpha = 1 - suave((dt - 1.8) / 1.2);
+    }
+    sombraPapel(); ctx.fillStyle = COLORES[k]; poligono(pts); ctx.fill(); sinSombra();
+    if (k === "letrero") {
+      const lx = cx - 30, ly = base - 128;
+      if (simbolo === "moneda") {
+        ctx.fillStyle = ORO_PAPEL; ctx.beginPath(); ctx.arc(lx, ly, 15, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#f2cf7a"; ctx.beginPath(); ctx.arc(lx, ly, 9, 0, Math.PI * 2); ctx.fill();
+      } else {
+        if (brillo > 0) { ctx.shadowColor = `rgba(227,176,79,${brillo})`; ctx.shadowBlur = 30 * brillo; }
+        logoPapel(lx, ly - 14, 34);
+        sinSombra();
+      }
+    }
+    ctx.restore();
+  }
+}
+// Logo cruz-wifi en papel (cruz azul petróleo, ondas doradas).
+function logoPapel(cx, arriba, alto) {
+  const g = alto * 0.09;
+  ctx.fillStyle = TEAL;
+  ctx.fillRect(cx - g / 2, arriba, g, alto);
+  ctx.fillRect(cx - alto * 0.29, arriba + alto * 0.3 - g / 2, alto * 0.58, g);
+  ctx.strokeStyle = ORO_PAPEL; ctx.lineWidth = g * 0.9; ctx.lineCap = "round";
+  for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(cx, arriba - alto * 0.02, alto * (0.12 + 0.12 * i), Math.PI * 1.25, Math.PI * 1.75); ctx.stroke(); }
+}
+
+// --- agua, lluvia, viento, relámpago -------------------------------------
+function dibujarAgua(e, t, frente) {
+  if (e.agua <= 0.01) return;
+  const nivel = 1560 - 230 * e.agua + (frente ? 40 : 0);
+  ctx.save(); sombraPapel(frente ? 1 : 0.7);
+  ctx.fillStyle = frente ? "#3f7f95" : "#5f97a8";
+  ctx.beginPath(); ctx.moveTo(0, H);
+  for (let x = 0; x <= W; x += 8) ctx.lineTo(x, nivel + 16 * Math.sin(x * 0.02 - t * (frente ? 3 : 2)) + 8 * Math.sin(x * 0.05 + t));
+  ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+const GOTAS = (() => { const r = aleatorio(12); return Array.from({ length: 150 }, () => ({ x: r() * 1300, y: r() * 1000, v: 1500 + r() * 700, l: 26 + r() * 22 })); })();
+function dibujarLluvia(e, t) {
+  if (e.lluvia <= 0.01) return;
+  ctx.save(); ctx.strokeStyle = `rgba(220,236,242,${0.8 * e.lluvia})`; ctx.lineWidth = 5; ctx.lineCap = "round";
+  for (const g of GOTAS) {
+    const y = 650 + ((g.y + t * g.v) % 1000), x = g.x - (y - 650) * 0.25 - 100;
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - g.l * 0.25, y + g.l); ctx.stroke();
+  }
+  ctx.restore();
+}
+function dibujarViento(e, t) {
+  if (e.lluvia <= 0.01) return;
+  ctx.save(); ctx.strokeStyle = `rgba(255,255,255,${0.55 * e.lluvia})`; ctx.lineWidth = 8; ctx.lineCap = "round";
+  for (let i = 0; i < 4; i++) {
+    const x0 = ((t * 520 + i * 380) % 1600) - 300, y0 = 960 + i * 70;
+    ctx.beginPath();
+    for (let k = 0; k <= 30; k++) { const x = x0 + k * 9, y = y0 + Math.sin(k * 0.3 + t * 3 + i) * 14; k ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+    ctx.arc(x0 + 280, y0 - 20, 20, Math.PI / 2, Math.PI * 2.2);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+function dibujarRelampago(cfg, t) {
+  for (const tr of cfg.relampagos || []) {
+    const d = t - tr;
+    if (d < 0 || d > 0.35) continue;
+    const a = d < 0.08 ? 1 : 1 - (d - 0.08) / 0.27;
+    ctx.fillStyle = `rgba(255,255,240,${0.35 * a})`; ctx.fillRect(0, 0, W, H);
+    ctx.save(); ctx.fillStyle = `rgba(255,236,170,${a})`; ctx.shadowColor = "rgba(255,240,180,1)"; ctx.shadowBlur = 40;
+    poligono([[560, 760], [520, 880], [555, 880], [505, 1010], [600, 860], [565, 860], [600, 760]]); ctx.fill(); ctx.restore();
+  }
+}
+
+// --- tarjeta de texto ----------------------------------------------------
+const TARJETA = { x: 70, y: 200, w: 940, h: 560 };
+function dibujarTarjeta() {
+  ctx.save(); sombraPapel(1.1);
+  ctx.fillStyle = "#fbf4e6"; ctx.beginPath(); ctx.roundRect(TARJETA.x, TARJETA.y, TARJETA.w, TARJETA.h, 28); ctx.fill();
+  sinSombra();
+  ctx.strokeStyle = "rgba(163,68,45,0.25)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.roundRect(TARJETA.x + 18, TARJETA.y + 18, TARJETA.w - 36, TARJETA.h - 36, 18); ctx.stroke();
+  ctx.restore();
+}
+function dibujarInvitacion(inv, t) {
+  if (!inv) return;
+  const p = suave((t - inv.desde) / 0.6) * (1 - suave((t - inv.hasta + 0.5) / 0.5));
+  if (p <= 0) return;
+  ctx.save(); ctx.globalAlpha = p;
+  ctx.font = "500 30px Montserrat"; ctx.letterSpacing = "8px"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillStyle = CREMA; ctx.fillText(inv.texto, 540, 1560);
+  ctx.restore();
+}
+function dibujarCierreRoca(esc, t) {
+  const p = salida((t - esc.inicio) / 0.8);
+  ctx.save(); ctx.globalAlpha = p;
+  logoPapel(540, 280, 130);
+  const linea = (txt, fuente, color, y, esp = 0) => { ctx.font = fuente; ctx.fillStyle = color; ctx.letterSpacing = `${esp}px`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, 540, y); };
+  linea(esc.lema, "500 30px Montserrat", TERRACOTA, 465, 10);
+  linea(esc.nombre, "500 80px Cormorant", "#1f3b44", 535);
+  ctx.strokeStyle = "rgba(163,68,45,0.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(440, 588); ctx.lineTo(640, 588); ctx.stroke();
+  esc.cta.forEach((l, i) => linea(l, "italic 500 58px Cormorant", "#1f3b44", 640 + i * 62));
+  ctx.restore();
+}
+
+// --- fotograma ------------------------------------------------------------
+iniciarPlantilla((guion, t) => {
+  const cfg = guion.roca;
+  const e = estado(cfg, t);
+  dibujarCielo(e, t);
+  dibujarNubes(e, t, cfg);
+  colinas(e);
+  dibujarAgua(e, t, false);
+  // Arena que se erosiona y taller que cae.
+  const erosion = suave((t - cfg.colapso + 1.5) / 2.5);
+  dibujarArena(erosion, e);
+  dibujarRoca(e);
+  const temblor = t > cfg.colapso - 1.6 && t < cfg.colapso ? Math.sin(t * 40) * 6 * suave((t - cfg.colapso + 1.6) / 1.6) : 0;
+  const colapso = t >= cfg.colapso ? t - cfg.colapso : null;
+  ctx.save(); ctx.translate(temblor, 0);
+  dibujarTaller(300, cimaArena(300, erosion) + 6, "moneda", 0, colapso, t);
+  ctx.restore();
+  const resalta = esc => (t >= esc[0] && t < esc[1] ? suave((t - esc[0]) / 0.6) * (1 - suave((t - esc[1] + 0.6) / 0.6)) : 0);
+  const brillo = Math.max(resalta(cfg.resaltaRoca || [0, 0]), e.sol);
+  dibujarTaller(780, 1216, "cruz", brillo, null, t);
+  dibujarAgua(e, t, true);
+  // Suelo de primer plano.
+  ctx.save(); sombraPapel(1.2); ctx.fillStyle = TEAL; ctx.beginPath(); ctx.moveTo(0, H);
+  for (let x = 0; x <= W; x += 10) ctx.lineTo(x, 1500 + 22 * Math.sin(x * 0.012 + 1));
+  ctx.lineTo(W, H); ctx.closePath(); ctx.fill(); ctx.restore();
+  dibujarLluvia(e, t);
+  dibujarViento(e, t);
+  dibujarRelampago(cfg, t);
+  ctx.drawImage(GRANO, 0, 0);
+  const esc = escenaEn(guion, t);
+  if (esc.tipo === "cierre") {
+    dibujarTarjeta();
+    return dibujarCierreRoca(esc, t);
+  }
+  dibujarTarjeta();
+  dibujarEscenaTexto(esc, t);
+  dibujarInvitacion(cfg.invitacion, t);
+});
+</script>
+</body>
+</html>

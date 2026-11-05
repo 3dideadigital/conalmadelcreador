@@ -1,0 +1,482 @@
+{
+  "titulo": "¿Sobre qué estás construyendo tu negocio?",
+  "plantilla": "roca",
+  "duracion": 48.5,
+  "portada": 1.0,
+  "roca": {
+    "tormenta": [
+      12.5,
+      28.0
+    ],
+    "colapso": 19.0,
+    "sol": [
+      33.5,
+      40.0
+    ],
+    "relampagos": [
+      15.8,
+      18.95
+    ],
+    "resaltaRoca": [
+      8.5,
+      13.0
+    ],
+    "invitacion": {
+      "texto": "ENVÍASELO A QUIEN EMPRENDE",
+      "desde": 14.0,
+      "hasta": 44.0
+    }
+  },
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 4.0,
+      "y": 480,
+      "visibleDesdeInicio": true,
+      "lineas": [
+        {
+          "texto": "¿Sobre qué estás",
+          "estilo": "grande"
+        },
+        {
+          "texto": "construyendo",
+          "estilo": "oroGrande"
+        },
+        {
+          "texto": "tu negocio?",
+          "estilo": "grande"
+        }
+      ]
+    },
+    {
+      "inicio": 4.0,
+      "fin": 8.5,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "Uno construyó",
+          "estilo": "normal"
+        },
+        {
+          "texto": "sobre arena:",
+          "estilo": "oro",
+          "en": 0.4
+        },
+        {
+          "texto": "el dinero",
+          "estilo": "normal",
+          "en": 1.4
+        },
+        {
+          "texto": "como seguridad.",
+          "estilo": "normal",
+          "en": 1.7
+        }
+      ]
+    },
+    {
+      "inicio": 8.5,
+      "fin": 13.0,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "El otro,",
+          "estilo": "normal"
+        },
+        {
+          "texto": "sobre la roca:",
+          "estilo": "oro",
+          "en": 0.4
+        },
+        {
+          "texto": "Dios en el centro.",
+          "estilo": "oro",
+          "en": 1.4
+        }
+      ]
+    },
+    {
+      "inicio": 13.0,
+      "fin": 18.5,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "«Descendió lluvia,",
+          "estilo": "cita"
+        },
+        {
+          "texto": "y vinieron ríos,",
+          "estilo": "cita",
+          "en": 0.9
+        },
+        {
+          "texto": "y soplaron vientos…»",
+          "estilo": "cita",
+          "en": 1.8
+        },
+        {
+          "texto": "MATEO 7:25",
+          "estilo": "referencia",
+          "en": 2.4
+        }
+      ]
+    },
+    {
+      "inicio": 18.5,
+      "fin": 23.0,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "Uno cayó.",
+          "estilo": "grande",
+          "en": 0.4
+        },
+        {
+          "texto": "El otro, no.",
+          "estilo": "oroGrande",
+          "en": 1.8
+        }
+      ]
+    },
+    {
+      "inicio": 23.0,
+      "fin": 27.5,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "«…y no cayó,",
+          "estilo": "cita"
+        },
+        {
+          "texto": "porque estaba fundada",
+          "estilo": "cita",
+          "en": 0.5
+        },
+        {
+          "texto": "sobre la roca.»",
+          "estilo": "cita",
+          "en": 1.0
+        },
+        {
+          "texto": "MATEO 7:25",
+          "estilo": "referencia",
+          "en": 1.6
+        }
+      ]
+    },
+    {
+      "inicio": 27.5,
+      "fin": 31.0,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "Puedes querer crecer",
+          "estilo": "normal"
+        },
+        {
+          "texto": "y tener estabilidad.",
+          "estilo": "normal",
+          "en": 0.5
+        },
+        {
+          "texto": "Está bien.",
+          "estilo": "oro",
+          "en": 1.4
+        }
+      ]
+    },
+    {
+      "inicio": 31.0,
+      "fin": 35.0,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "Pero el dinero",
+          "estilo": "normal"
+        },
+        {
+          "texto": "es un recurso…",
+          "estilo": "normal",
+          "en": 0.6
+        },
+        {
+          "texto": "no tu roca.",
+          "estilo": "oroGrande",
+          "en": 1.5
+        }
+      ]
+    },
+    {
+      "inicio": 35.0,
+      "fin": 40.5,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "«Mas buscad primeramente",
+          "estilo": "cita"
+        },
+        {
+          "texto": "el reino de Dios",
+          "estilo": "cita"
+        },
+        {
+          "texto": "y su justicia,",
+          "estilo": "cita"
+        },
+        {
+          "texto": "y todas estas cosas",
+          "estilo": "cita",
+          "en": 1.4
+        },
+        {
+          "texto": "os serán añadidas.»",
+          "estilo": "cita",
+          "en": 1.7
+        },
+        {
+          "texto": "MATEO 6:33",
+          "estilo": "referencia",
+          "en": 2.4
+        }
+      ]
+    },
+    {
+      "inicio": 40.5,
+      "fin": 44.5,
+      "y": 480,
+      "lineas": [
+        {
+          "texto": "Emprende con fe.",
+          "estilo": "normal"
+        },
+        {
+          "texto": "Construye",
+          "estilo": "grande",
+          "en": 0.8
+        },
+        {
+          "texto": "sobre la Roca.",
+          "estilo": "oroGrande",
+          "en": 1.3
+        }
+      ]
+    },
+    {
+      "inicio": 44.5,
+      "fin": 48.5,
+      "tipo": "cierre",
+      "lema": "MANTENTE CONECTADO",
+      "nombre": "Con Alma del Creador",
+      "cta": [
+        "Envíaselo a alguien",
+        "que esté emprendiendo"
+      ]
+    }
+  ],
+  "musica": {
+    "semilla": 33,
+    "pasoPiano": 0.85,
+    "acordes": [
+      {
+        "en": 0,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "D5"
+        ]
+      },
+      {
+        "en": 4.0,
+        "notas": [
+          "A2",
+          "E3",
+          "A3",
+          "C4",
+          "E4",
+          "B4"
+        ]
+      },
+      {
+        "en": 8.5,
+        "notas": [
+          "F2",
+          "C3",
+          "F3",
+          "A3",
+          "C4",
+          "G4"
+        ]
+      },
+      {
+        "en": 12.5,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 16.0,
+        "notas": [
+          "A#1",
+          "F3",
+          "A#3",
+          "D4",
+          "F4",
+          "C5"
+        ]
+      },
+      {
+        "en": 18.5,
+        "notas": [
+          "A1",
+          "E3",
+          "A3",
+          "C#4",
+          "E4",
+          "A4"
+        ]
+      },
+      {
+        "en": 21.0,
+        "notas": [
+          "D2",
+          "A3",
+          "D4",
+          "F4",
+          "A4",
+          "E5"
+        ]
+      },
+      {
+        "en": 23.0,
+        "notas": [
+          "F2",
+          "C3",
+          "F3",
+          "A3",
+          "C4",
+          "G4"
+        ]
+      },
+      {
+        "en": 27.5,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "D5"
+        ]
+      },
+      {
+        "en": 31.0,
+        "notas": [
+          "G2",
+          "D3",
+          "G3",
+          "B3",
+          "D4",
+          "A4"
+        ]
+      },
+      {
+        "en": 35.0,
+        "notas": [
+          "F2",
+          "C3",
+          "F3",
+          "A3",
+          "C4",
+          "G4"
+        ],
+        "patron": "ascendente",
+        "paso": 0.32
+      },
+      {
+        "en": 37.7,
+        "notas": [
+          "G2",
+          "D3",
+          "G3",
+          "B3",
+          "D4",
+          "G4"
+        ],
+        "patron": "ascendente",
+        "paso": 0.29
+      },
+      {
+        "en": 40.5,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "D5"
+        ]
+      },
+      {
+        "en": 44.5,
+        "notas": [
+          "C2",
+          "G3",
+          "C4",
+          "E4",
+          "G4",
+          "B4"
+        ]
+      }
+    ],
+    "campanas": [
+      {
+        "en": 9.0,
+        "nota": "G5",
+        "ganancia": 0.08
+      },
+      {
+        "en": 19.1,
+        "nota": "A4",
+        "ganancia": 0.12
+      },
+      {
+        "en": 24.0,
+        "nota": "E6",
+        "ganancia": 0.08
+      },
+      {
+        "en": 34.0,
+        "nota": "C6",
+        "ganancia": 0.1
+      },
+      {
+        "en": 45.2,
+        "nota": "G5",
+        "pan": -0.3
+      },
+      {
+        "en": 45.47,
+        "nota": "C6",
+        "pan": 0.0
+      },
+      {
+        "en": 45.73,
+        "nota": "E6",
+        "pan": 0.3
+      }
+    ]
+  },
+  "publicacion": {
+    "texto": "¿Sobre qué estás construyendo tu negocio? 🏠\n\nCuando emprendemos, no solo importa cuánto conseguimos, sino dónde ponemos nuestra confianza.\n\nPuedes querer crecer, generar ingresos y tener estabilidad. Está bien. Pero no es lo mismo administrar el dinero que esperar que el dinero te dé seguridad. Las tormentas llegan para todos; lo que marca la diferencia es el cimiento.\n\n«Cualquiera, pues, que me oye estas palabras, y las hace, le compararé a un hombre prudente, que edificó su casa sobre la roca. Descendió lluvia, y vinieron ríos, y soplaron vientos, y golpearon contra aquella casa; y no cayó, porque estaba fundada sobre la roca.» — Mateo 7:24-25 (RVR1960)\n\n«Mas buscad primeramente el reino de Dios y su justicia, y todas estas cosas os serán añadidas.» — Mateo 6:33\n\n📩 Envíaselo a alguien que esté emprendiendo.\n\n#emprenderconfe #emprendedorescristianos #fe #mateo633 #negocios #palabradedios #cristianos #mantenteconectado",
+    "musica": "El vídeo ya lleva música original compuesta para este reel (sin derechos de autor). Si se prefiere usar una canción de la biblioteca de Instagram, bajar a 0 el volumen del audio original al subirlo.",
+    "comentarioFijado": "¿Qué te ayuda a mantener a Dios en el centro de tu trabajo? 👇"
+  }
+}
