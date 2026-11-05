@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Portadas de historias destacadas — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body class="render">
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Portadas para las historias destacadas del perfil (1080×1920). Instagram
+// muestra solo el círculo central, así que el icono va centrado.
+// Uso: portadas-destacadas.html?icono=taller|llavero|tienda|oracion
+
+const ICONO = new URLSearchParams(location.search).get("icono") || "taller";
+const C = [540, 960];
+
+function fondo() {
+  ctx.fillStyle = "#060504"; ctx.fillRect(0, 0, W, H);
+  const g = ctx.createRadialGradient(...C, 0, ...C, 700);
+  g.addColorStop(0, "rgba(120,86,40,0.45)"); g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = `rgba(${ORO_RGB},0.9)`; ctx.lineWidth = 8;
+  ctx.beginPath(); ctx.arc(...C, 330, 0, Math.PI * 2); ctx.stroke();
+  ctx.strokeStyle = `rgba(${ORO_RGB},0.35)`; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.arc(...C, 355, 0, Math.PI * 2); ctx.stroke();
+}
+function trazos(fn) {
+  ctx.save();
+  ctx.strokeStyle = ORO; ctx.fillStyle = ORO; ctx.lineWidth = 16; ctx.lineCap = ctx.lineJoin = "round";
+  ctx.shadowColor = `rgba(${ORO_RGB},0.7)`; ctx.shadowBlur = 24;
+  fn(); ctx.restore();
+}
+
+const ICONOS = {
+  // Martillo y destornillador cruzados.
+  taller: () => trazos(() => {
+    ctx.save(); ctx.translate(...C); ctx.rotate(-Math.PI / 4);
+    ctx.beginPath(); ctx.moveTo(0, -130); ctx.lineTo(0, 190); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(-90, -200, 180, 72, 14); ctx.stroke();
+    ctx.restore();
+    ctx.save(); ctx.translate(...C); ctx.rotate(Math.PI / 4);
+    ctx.beginPath(); ctx.roundRect(-34, 40, 68, 150, 26); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, 40); ctx.lineTo(0, -150); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-14, -150); ctx.lineTo(14, -150); ctx.lineTo(0, -190); ctx.closePath(); ctx.stroke();
+    ctx.restore();
+  }),
+  // Llavero con etiqueta y un código QR esquemático.
+  llavero: () => trazos(() => {
+    ctx.beginPath(); ctx.arc(540, 760, 60, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(540, 820); ctx.lineTo(540, 850); ctx.stroke();
+    ctx.beginPath(); ctx.roundRect(400, 850, 280, 300, 36); ctx.stroke();
+    const q = (x, y, s) => { ctx.lineWidth = 10; ctx.strokeRect(x, y, s, s); ctx.fillRect(x + s * 0.3, y + s * 0.3, s * 0.4, s * 0.4); };
+    q(440, 890, 80); q(560, 890, 80); q(440, 1030, 80);
+    ctx.shadowBlur = 0;
+    for (const [x, y] of [[575, 1035], [615, 1035], [595, 1070], [635, 1090], [575, 1095]]) ctx.fillRect(x, y, 26, 26);
+  }),
+  // Bolsa de la compra.
+  tienda: () => trazos(() => {
+    ctx.beginPath(); ctx.moveTo(380, 860); ctx.lineTo(700, 860); ctx.lineTo(730, 1170); ctx.lineTo(350, 1170); ctx.closePath(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(540, 860, 85, Math.PI, 2 * Math.PI); ctx.stroke();
+    dibujarLogo(540, 975, 130, 1, 1);
+  }),
+  // Biblia abierta con la cruz-wifi encima.
+  oracion: () => trazos(() => {
+    ctx.beginPath(); ctx.moveTo(540, 1150); ctx.quadraticCurveTo(450, 1100, 330, 1120); ctx.lineTo(330, 900); ctx.quadraticCurveTo(450, 880, 540, 930); ctx.closePath(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(540, 1150); ctx.quadraticCurveTo(630, 1100, 750, 1120); ctx.lineTo(750, 900); ctx.quadraticCurveTo(630, 880, 540, 930); ctx.closePath(); ctx.stroke();
+    ctx.lineWidth = 6;
+    for (const k of [0, 1, 2]) {
+      ctx.beginPath(); ctx.moveTo(370, 960 + k * 45); ctx.quadraticCurveTo(440, 950 + k * 45, 505, 975 + k * 45); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(710, 960 + k * 45); ctx.quadraticCurveTo(640, 950 + k * 45, 575, 975 + k * 45); ctx.stroke();
+    }
+    dibujarLogo(540, 720, 120, 1, 1);
+  }),
+};
+
+(async () => {
+  await document.fonts.ready;
+  fondo();
+  ICONOS[ICONO]();
+  document.body.dataset.listo = "1";
+})();
+</script>
+</body>
+</html>
