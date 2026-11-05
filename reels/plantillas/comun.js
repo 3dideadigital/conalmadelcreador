@@ -7,6 +7,8 @@ const W = 1080, H = 1920;
 const ORO = "#d4af6a";
 const ORO_RGB = "212,175,106";
 const BLANCO = "#f4efe6";
+// Sombra del texto; las plantillas de fondo claro pueden cambiarla.
+let SOMBRA_TEXTO = "rgba(0,0,0,0.6)";
 const lienzo = document.getElementById("lienzo");
 const ctx = lienzo.getContext("2d");
 
@@ -72,7 +74,7 @@ function dibujarLinea(texto, estilo, x, y, alfa, subida) {
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   if (e.espaciado) ctx.letterSpacing = `${e.espaciado}px`;
-  ctx.shadowColor = "rgba(0,0,0,0.6)";
+  ctx.shadowColor = SOMBRA_TEXTO;
   ctx.shadowBlur = 24;
   ctx.fillText(texto, x, y + subida);
   ctx.restore();
