@@ -29,6 +29,7 @@ Resultado en `salida/<guion>/`:
 | `bateria` | `guiones/02-bateria.json` | Batería espiritual al 3 % que se conecta al logo y se carga al 100 %. Los tiempos van en el apartado `bateria` del guion. |
 | `amanecer` | `guiones/04-amanecer.json` | Cielo que pasa de la noche a un amanecer cálido; se abre una puerta de luz y sale el sol. Para mensajes de esperanza. Tiempos en el apartado `amanecer` (puerta, sol e invitación a compartir a mitad del reel). |
 | `escucha` | `guiones/06-salmo81.json` | Móvil lleno de notificaciones que entierran un mensaje de Dios; al silenciarlo se escucha. Después, ilustraciones de línea dorada que se dibujan solas (cruce de caminos, muro que cae, trigo y miel de la peña). |
+| `roca` | `guiones/07-roca.json` | Papel recortado: dos talleres iguales, uno sobre arena y otro sobre roca; llega la tormenta, el de arena cae y sale el sol (Mateo 7:24-27). Texto sobre tarjeta de papel. |
 | `carrusel` | `guiones/03-ansiedad.json` | Carrusel de imágenes 1080×1350 (`"formato": "carrusel"`): portada, versículos con reflexión, oración y cierre. Genera `01.jpg`, `02.jpg`… |
 
 ## Estilos de línea disponibles
