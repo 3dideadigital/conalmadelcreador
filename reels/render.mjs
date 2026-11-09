@@ -94,7 +94,7 @@ async function renderReel() {
     const ffmpeg = spawn("ffmpeg", [
       "-y", "-loglevel", "error",
       "-f", "image2pipe", "-framerate", String(FPS), "-i", "-",
-      "-c:v", "libx264", "-preset", "slow", "-crf", "17", "-pix_fmt", "yuv420p",
+      "-c:v", "libx264", "-preset", "slow", "-crf", "17", "-maxrate", "5M", "-bufsize", "10M", "-pix_fmt", "yuv420p",
       "-profile:v", "high",
       soloVideo,
     ], { stdio: ["pipe", "inherit", "inherit"] });
