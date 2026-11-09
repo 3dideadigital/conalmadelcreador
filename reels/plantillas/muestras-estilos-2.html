@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Muestras de estilos (2) — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body class="render">
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Muestras estáticas de tres estilos para la oración por los negocios.
+// Uso: ?estilo=escaparate|acuarela|neon&escena=gancho|personas
+
+const P = new URLSearchParams(location.search);
+const ESTILO = P.get("estilo") || "escaparate";
+const ESCENA = P.get("escena") || "gancho";
+const TEXTOS = {
+  gancho: [{ t: "Si tienes un negocio," }, { t: "o estás a punto de abrirlo," }, { t: "oremos juntos por él.", e: true }],
+  personas: [{ t: "Mándame a las personas" }, { t: "correctas:", e: true }, { t: "las que vuelven" }, { t: "y se lo cuentan a otros." }],
+};
+function texto(y, o) {
+  let yy = y;
+  for (const l of TEXTOS[ESCENA]) {
+    ctx.save();
+    ctx.font = l.e ? o.fe : o.f; ctx.fillStyle = l.e ? o.ce : o.c;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    if (o.sombra) { ctx.shadowColor = l.e && o.sombraE ? o.sombraE : o.sombra; ctx.shadowBlur = o.blur || 20; }
+    ctx.fillText(l.t, 540, yy); ctx.restore();
+    yy += l.e ? o.ae : o.a;
+  }
+}
+const pol = pts => { ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(...p) : ctx.moveTo(...p))); ctx.closePath(); };
+function persona(x, y, esc, color) {
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(x, y - 150 * esc, 26 * esc, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.roundRect(x - 34 * esc, y - 118 * esc, 68 * esc, 120 * esc, 30 * esc); ctx.fill();
+}
+
+// --- A. ESCAPARATE AL AMANECER (ilustración plana cálida) --------------
+function escaparate() {
+  let g = ctx.createLinearGradient(0, 0, 0, 1400);
+  g.addColorStop(0, "#c9b6d6"); g.addColorStop(0.55, "#f2c6a8"); g.addColorStop(1, "#ffe0b0");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#ffe7b6"; ctx.beginPath(); ctx.arc(860, 830, 120, 0, Math.PI * 2); ctx.fill();
+  // Edificios de fondo.
+  ctx.fillStyle = "#b99aa8"; [[0, 900, 170, 600], [930, 860, 150, 640]].forEach(r => ctx.fillRect(...r));
+  // Fachada.
+  ctx.fillStyle = "#efdcc0"; ctx.fillRect(150, 830, 780, 680);
+  ctx.fillStyle = "#2f4f57"; ctx.fillRect(150, 830, 780, 26); ctx.fillRect(150, 1490, 780, 30);
+  // Letrero con la cruz-wifi.
+  ctx.fillStyle = "#2f4f57"; ctx.beginPath(); ctx.roundRect(330, 880, 420, 92, 14); ctx.fill();
+  ctx.save(); ctx.translate(-540 + 540, 0); dibujarLogo(540, 900, 56, 1, 1); ctx.restore();
+  // Toldo a rayas.
+  for (let i = 0; i < 10; i++) {
+    ctx.fillStyle = i % 2 ? "#f7efe2" : "#c4553c";
+    pol([[170 + i * 74, 1000], [244 + i * 74, 1000], [244 + i * 74, 1060], [170 + i * 74, 1060]]); ctx.fill();
+    ctx.beginPath(); ctx.arc(207 + i * 74, 1060, 37, 0, Math.PI); ctx.fill();
+  }
+  // Escaparate iluminado con estantes.
+  const abierto = ESCENA === "personas";
+  ctx.fillStyle = "#2f4f57"; ctx.fillRect(200, 1120, 400, 320);
+  g = ctx.createLinearGradient(0, 1130, 0, 1430);
+  g.addColorStop(0, abierto ? "#ffe8b8" : "#ffd18a"); g.addColorStop(1, "#f6b56a");
+  ctx.fillStyle = g; ctx.fillRect(214, 1134, 372, 292);
+  ctx.fillStyle = "rgba(47,79,87,0.55)";
+  [1220, 1320].forEach(y => ctx.fillRect(214, y, 372, 8));
+  for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc(250 + i * 58, 1200, 14, 0, Math.PI * 2); ctx.fill(); ctx.fillRect(244 + i * 58, 1260, 14, 56); }
+  // Puerta.
+  ctx.fillStyle = "#2f4f57"; ctx.fillRect(660, 1120, 220, 370);
+  if (abierto) {
+    ctx.save(); ctx.shadowColor = "rgba(255,220,150,0.9)"; ctx.shadowBlur = 60;
+    ctx.fillStyle = "#ffe6b0"; ctx.fillRect(674, 1134, 192, 356); ctx.restore();
+    pol([[674, 1134], [730, 1150], [730, 1475], [674, 1490]]); ctx.fillStyle = "#3d6670"; ctx.fill();
+  } else {
+    ctx.fillStyle = "#ffdca0"; ctx.fillRect(694, 1150, 152, 150);
+    ctx.fillStyle = "#c79a4a"; ctx.beginPath(); ctx.arc(850, 1320, 9, 0, Math.PI * 2); ctx.fill();
+  }
+  // Cartel colgante CERRADO / ABIERTO.
+  ctx.strokeStyle = "#2f4f57"; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(735, 1160); ctx.lineTo(770, 1130); ctx.lineTo(805, 1160); ctx.stroke();
+  ctx.fillStyle = abierto ? "#3f8f6b" : "#c4553c"; ctx.beginPath(); ctx.roundRect(715, 1160, 110, 46, 8); ctx.fill();
+  ctx.font = "600 22px Montserrat"; ctx.fillStyle = "#fff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(abierto ? "ABIERTO" : "CERRADO", 770, 1184);
+  // Farol y maceta.
+  ctx.fillStyle = "#2f4f57"; ctx.fillRect(892, 1100, 10, 50);
+  ctx.save(); ctx.shadowColor = "rgba(255,210,120,0.9)"; ctx.shadowBlur = 40; ctx.fillStyle = "#ffd88a";
+  ctx.beginPath(); ctx.roundRect(880, 1145, 34, 46, 8); ctx.fill(); ctx.restore();
+  ctx.fillStyle = "#b5573f"; pol([[110, 1440], [170, 1440], [160, 1500], [120, 1500]]); ctx.fill();
+  ctx.fillStyle = "#4f7d5c"; for (const [dx, dy, r] of [[140, 1405, 34], [118, 1420, 24], [164, 1418, 26]]) { ctx.beginPath(); ctx.arc(dx, dy, r, 0, Math.PI * 2); ctx.fill(); }
+  // Acera.
+  ctx.fillStyle = "#d8c3a8"; ctx.fillRect(0, 1520, W, 400);
+  ctx.fillStyle = "#c6ae92"; for (let x = 0; x < W; x += 160) ctx.fillRect(x, 1520, 4, 400);
+  if (abierto) { persona(560, 1610, 1.05, "#2f4f57"); persona(430, 1640, 0.95, "#8a4a3a"); persona(300, 1620, 1.0, "#5e6f7a"); }
+  texto(330, { f: "500 80px Cormorant", fe: "600 96px Cormorant", c: "#2b3a40", ce: "#a3442d", a: 100, ae: 116 });
+}
+
+// --- B. ACUARELA Y TINTA ------------------------------------------------
+function acuarela() {
+  const r = aleatorio(17);
+  ctx.fillStyle = "#f7f1e6"; ctx.fillRect(0, 0, W, H);
+  for (let i = 0; i < 4000; i++) { ctx.fillStyle = `rgba(120,100,70,${r() * 0.04})`; ctx.fillRect(r() * W, r() * H, 2, 2); }
+  // Manchas de acuarela: muchos círculos translúcidos con bordes irregulares.
+  const mancha = (cx, cy, rad, color, n = 60) => {
+    for (let i = 0; i < n; i++) {
+      const a = r() * Math.PI * 2, d = r() * rad;
+      ctx.fillStyle = color; ctx.beginPath(); ctx.arc(cx + Math.cos(a) * d, cy + Math.sin(a) * d * 0.7, rad * (0.25 + r() * 0.35), 0, Math.PI * 2); ctx.fill();
+    }
+  };
+  mancha(540, 900, 420, "rgba(150,180,210,0.035)", 90);
+  mancha(780, 980, 220, "rgba(240,170,110,0.06)", 70);
+  mancha(540, 1300, 380, "rgba(220,150,120,0.04)", 80);
+  mancha(540, 1520, 460, "rgba(140,160,120,0.035)", 80);
+  // Tienda en tinta temblorosa.
+  const linea = (pts, w = 3) => {
+    ctx.strokeStyle = "rgba(40,30,25,0.85)"; ctx.lineWidth = w; ctx.lineCap = ctx.lineJoin = "round";
+    for (let p = 0; p < 2; p++) {
+      ctx.beginPath();
+      pts.forEach(([x, y], i) => { const j = [x + (r() - 0.5) * 4, y + (r() - 0.5) * 4]; i ? ctx.lineTo(...j) : ctx.moveTo(...j); });
+      ctx.stroke(); ctx.globalAlpha = 0.5;
+    }
+    ctx.globalAlpha = 1;
+  };
+  mancha(560, 1260, 230, "rgba(250,205,140,0.07)", 60);
+  linea([[250, 1480], [250, 1020], [830, 1020], [830, 1480]], 4);
+  linea([[220, 1030], [540, 900], [860, 1030]], 4);
+  linea([[300, 1140], [560, 1140], [560, 1400], [300, 1400], [300, 1140]]);
+  linea([[620, 1140], [770, 1140], [770, 1480]]); linea([[620, 1140], [620, 1480]]);
+  linea([[180, 1480], [900, 1480]], 3);
+  const abierto = ESCENA === "personas";
+  if (abierto) {
+    mancha(695, 1310, 80, "rgba(255,210,130,0.12)", 50);
+    const fig = (x, c) => { mancha(x, 1560, 40, c, 30); mancha(x, 1480, 22, c, 20); };
+    fig(440, "rgba(70,100,120,0.12)"); fig(560, "rgba(170,90,70,0.12)"); fig(330, "rgba(110,120,90,0.12)");
+  }
+  dibujarLogo(540, 940, 60, 1, 0);
+  ctx.strokeStyle = "rgba(40,30,25,0.85)"; ctx.lineWidth = 4;
+  ctx.beginPath(); ctx.moveTo(540, 930); ctx.lineTo(540, 1000); ctx.moveTo(518, 950); ctx.lineTo(562, 950); ctx.stroke();
+  ctx.strokeStyle = "rgba(196,120,60,0.9)"; ctx.lineCap = "round";
+  for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(540, 928, 9 + i * 9, Math.PI * 1.25, Math.PI * 1.75); ctx.stroke(); }
+  texto(330, { f: "italic 500 80px Cormorant", fe: "italic 600 96px Cormorant", c: "#2b211c", ce: "#b5573f", a: 100, ae: 116 });
+}
+
+// --- C. NEÓN CÁLIDO -------------------------------------------------------
+function neon() {
+  ctx.fillStyle = "#120f16"; ctx.fillRect(0, 0, W, H);
+  // Pared de ladrillo apenas visible.
+  ctx.strokeStyle = "rgba(255,255,255,0.035)"; ctx.lineWidth = 2;
+  for (let y = 0, f = 0; y < H; y += 46, f++) for (let x = (f % 2) * 60 - 60; x < W; x += 120) ctx.strokeRect(x, y, 120, 46);
+  const tubo = (fn, color, brillo = 1) => {
+    ctx.save(); ctx.lineCap = ctx.lineJoin = "round";
+    ctx.strokeStyle = color; ctx.shadowColor = color;
+    for (const [w, b, a] of [[18, 60, 0.35], [10, 30, 0.7], [5, 10, 1]]) { ctx.globalAlpha = a * brillo; ctx.lineWidth = w; ctx.shadowBlur = b; fn(); ctx.stroke(); }
+    ctx.globalAlpha = brillo; ctx.lineWidth = 2.5; ctx.strokeStyle = "#fff8e8"; ctx.shadowBlur = 0; fn(); ctx.stroke();
+    ctx.restore();
+  };
+  const abierto = ESCENA === "personas";
+  // Cruz-wifi de neón.
+  const cx = 540, top = 900;
+  tubo(() => { ctx.beginPath(); ctx.moveTo(cx, top); ctx.lineTo(cx, top + 300); ctx.moveTo(cx - 90, top + 90); ctx.lineTo(cx + 90, top + 90); }, "#ffd27a");
+  for (let i = 0; i < 3; i++) tubo(() => { ctx.beginPath(); ctx.arc(cx, top - 10, 40 + i * 40, Math.PI * 1.25, Math.PI * 1.75); }, "#ffb84d", 1);
+  // Cartel ABIERTO.
+  tubo(() => { ctx.beginPath(); ctx.roundRect(340, 1300, 400, 120, 30); }, abierto ? "#ff6f6f" : "#5a3a3a", abierto ? 1 : 0.35);
+  ctx.save(); ctx.font = "600 64px Montserrat"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.letterSpacing = "10px";
+  ctx.fillStyle = abierto ? "#ffe0e0" : "rgba(255,160,160,0.25)"; ctx.shadowColor = "#ff6f6f"; ctx.shadowBlur = abierto ? 30 : 0;
+  ctx.fillText("ABIERTO", 545, 1362); ctx.restore();
+  if (abierto) {
+    const fig = (x, c) => tubo(() => { ctx.beginPath(); ctx.arc(x, 1520, 18, 0, Math.PI * 2); ctx.moveTo(x, 1540); ctx.lineTo(x, 1610); ctx.moveTo(x - 30, 1570); ctx.lineTo(x + 30, 1570); ctx.moveTo(x, 1610); ctx.lineTo(x - 22, 1660); ctx.moveTo(x, 1610); ctx.lineTo(x + 22, 1660); }, c);
+    fig(400, "#7fd6e8"); fig(540, "#ffd27a"); fig(680, "#7fd6e8");
+  }
+  texto(330, { f: "500 80px Cormorant", fe: "600 96px Cormorant", c: "#f4efe6", ce: "#ffd27a", a: 100, ae: 116, sombra: "rgba(255,220,160,0.25)", sombraE: "rgba(255,190,90,0.8)", blur: 24 });
+}
+
+(async () => {
+  for (const f of ["500 80px Cormorant", "600 96px Cormorant", "italic 500 80px Cormorant", "600 64px Montserrat"]) await document.fonts.load(f);
+  ({ escaparate, acuarela, neon })[ESTILO]();
+  document.body.dataset.listo = "1";
+})();
+</script>
+</body>
+</html>
