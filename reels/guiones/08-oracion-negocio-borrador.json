@@ -1,0 +1,250 @@
+{
+  "titulo": "Oración por tu negocio (borrador de muestra)",
+  "plantilla": "cuento",
+  "duracion": 32,
+  "portada": 1.5,
+  "cuento": {
+    "fundido": 0.9,
+    "planos": [
+      {
+        "imagen": "recursos/08-oracion-negocio/01-madrugada.jpg",
+        "inicio": 0,
+        "fin": 6,
+        "zoom": [
+          1.0,
+          1.1
+        ],
+        "foco": [
+          0.62,
+          0.6
+        ],
+        "cartel": {
+          "textos": [
+            [
+              0,
+              "CERRADO"
+            ]
+          ],
+          "x": 322,
+          "y": 1015,
+          "w": 128,
+          "h": 88
+        }
+      },
+      {
+        "imagen": "recursos/08-oracion-negocio/05-pan-de-mi-casa.jpg",
+        "inicio": 6,
+        "fin": 12,
+        "zoom": [
+          1.05,
+          1.0
+        ],
+        "foco": [
+          0.5,
+          0.6
+        ]
+      },
+      {
+        "imagen": "recursos/08-oracion-negocio/07-sabiduria.jpg",
+        "inicio": 12,
+        "fin": 18,
+        "zoom": [
+          1.0,
+          1.08
+        ],
+        "foco": [
+          0.5,
+          0.55
+        ]
+      },
+      {
+        "imagen": "recursos/08-oracion-negocio/10-crecer.jpg",
+        "inicio": 18,
+        "fin": 23,
+        "zoom": [
+          1.0,
+          1.08
+        ],
+        "foco": [
+          0.6,
+          0.5
+        ]
+      },
+      {
+        "imagen": "recursos/08-oracion-negocio/11-familia.jpg",
+        "inicio": 23,
+        "fin": 28,
+        "zoom": [
+          1.0,
+          1.1
+        ],
+        "foco": [
+          0.55,
+          0.55
+        ],
+        "cartel": {
+          "textos": [
+            [
+              0,
+              "CERRADO"
+            ],
+            [
+              26.2,
+              "ABIERTO"
+            ]
+          ],
+          "x": 448,
+          "y": 968,
+          "w": 159,
+          "h": 135
+        }
+      }
+    ],
+    "invitacion": {
+      "texto": "GUÁRDALA PARA ORARLA CADA MAÑANA",
+      "desde": 7,
+      "hasta": 27.5
+    }
+  },
+  "escenas": [
+    {
+      "inicio": 0,
+      "fin": 6,
+      "y": 360,
+      "visibleDesdeInicio": true,
+      "lineas": [
+        {
+          "texto": "Si tienes un negocio,",
+          "estilo": "grande"
+        },
+        {
+          "texto": "o estás a punto de abrirlo,",
+          "estilo": "normal"
+        },
+        {
+          "texto": "regálame un minuto",
+          "estilo": "normal"
+        },
+        {
+          "texto": "y oremos juntos por él.",
+          "estilo": "oro"
+        }
+      ]
+    },
+    {
+      "inicio": 6,
+      "fin": 12,
+      "y": 330,
+      "lineas": [
+        {
+          "texto": "Quiero que de aquí salga",
+          "estilo": "normal"
+        },
+        {
+          "texto": "el pan de mi casa,",
+          "estilo": "oro",
+          "en": 0.5
+        },
+        {
+          "texto": "y que quien entre por esa puerta",
+          "estilo": "normal",
+          "en": 1.6
+        },
+        {
+          "texto": "salga mejor de lo que llegó.",
+          "estilo": "normal",
+          "en": 2.0
+        }
+      ]
+    },
+    {
+      "inicio": 12,
+      "fin": 18,
+      "y": 330,
+      "lineas": [
+        {
+          "texto": "Dame sabiduría, Señor.",
+          "estilo": "normal"
+        },
+        {
+          "texto": "Que no me gane el afán",
+          "estilo": "normal",
+          "en": 0.8
+        },
+        {
+          "texto": "ni me paralice el miedo.",
+          "estilo": "normal",
+          "en": 1.2
+        },
+        {
+          "texto": "Pon en mi camino a quien sepa",
+          "estilo": "normal",
+          "en": 2.4
+        },
+        {
+          "texto": "lo que yo todavía no sé.",
+          "estilo": "oro",
+          "en": 2.8
+        }
+      ]
+    },
+    {
+      "inicio": 18,
+      "fin": 23,
+      "y": 330,
+      "lineas": [
+        {
+          "texto": "Haz crecer esto, Señor,",
+          "estilo": "normal"
+        },
+        {
+          "texto": "paso a paso",
+          "estilo": "oro",
+          "en": 0.8
+        },
+        {
+          "texto": "y sobre buena base.",
+          "estilo": "normal",
+          "en": 1.4
+        }
+      ]
+    },
+    {
+      "inicio": 23,
+      "fin": 28,
+      "y": 360,
+      "lineas": [
+        {
+          "texto": "Que un día mi familia diga:",
+          "estilo": "normal"
+        },
+        {
+          "texto": "Dios ha sido bueno.",
+          "estilo": "oro",
+          "en": 0.8
+        },
+        {
+          "texto": "Dios es el verdadero dueño.",
+          "estilo": "oro",
+          "en": 1.6
+        },
+        {
+          "texto": "Amén.",
+          "estilo": "oroGrande",
+          "en": 3.2
+        }
+      ]
+    },
+    {
+      "inicio": 28,
+      "fin": 32,
+      "tipo": "cierre",
+      "lema": "MANTENTE CONECTADO",
+      "nombre": "Con Alma del Creador",
+      "cta": [
+        "Guárdala para hacerla",
+        "antes de abrir cada mañana"
+      ]
+    }
+  ]
+}

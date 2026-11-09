@@ -37,7 +37,7 @@ await mkdir(carpeta, { recursive: true });
 // Abre la plantilla del guion en un navegador sin ventana, servida desde un
 // servidor local mínimo para que cargue las fuentes.
 async function abrirPlantilla(viewport) {
-  const TIPOS = { ".html": "text/html", ".css": "text/css", ".woff2": "font/woff2", ".json": "application/json", ".js": "text/javascript" };
+  const TIPOS = { ".html": "text/html", ".css": "text/css", ".jpg": "image/jpeg", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json", ".js": "text/javascript" };
   const servidor = createServer(async (req, res) => {
     const archivo = path.join(RAIZ, decodeURIComponent(new URL(req.url, "http://x").pathname));
     if (!archivo.startsWith(RAIZ) || !existsSync(archivo)) { res.writeHead(404); return res.end(); }

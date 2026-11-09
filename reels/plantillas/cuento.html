@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plantilla cuento (ilustraciones) — Con Alma del Creador</title>
+<link rel="stylesheet" href="comun.css">
+</head>
+<body>
+<canvas id="lienzo" width="1080" height="1920"></canvas>
+<script src="comun.js"></script>
+<script>
+// Plantilla "cuento": ilustraciones a pantalla completa (generadas aparte, por
+// ejemplo con Google Flow) con movimiento lento de cámara, fundidos entre
+// planos y el texto sobre una tarjeta de papel, como en un libro ilustrado.
+// Uso: cuento.html?guion=../guiones/08-oracion-negocio.json
+// guion.cuento.planos: [{ imagen, inicio, fin, zoom: [desde, hasta], foco: [x, y], cartel }]
+//   - imagen: ruta relativa a reels/ · foco: punto (0-1) hacia el que se acerca la cámara
+//   - cartel: { textos: [[desde, "CERRADO"], [t, "ABIERTO"]], x, y, w, h } en píxeles de la imagen
+// Los textos van en guion.escenas, como en el resto de plantillas.
+
+const TINTA = "#3b2a1e", TERRACOTA = "#a3442d";
+ESTILOS.grande.color = ESTILOS.normal.color = ESTILOS.cita.color = TINTA;
+ESTILOS.oro.color = ESTILOS.oroGrande.color = ESTILOS.referencia.color = TERRACOTA;
+ESTILOS.normal.fuente = "500 68px Cormorant"; ESTILOS.normal.alto = 80;
+ESTILOS.grande.fuente = "500 84px Cormorant"; ESTILOS.grande.alto = 96;
+ESTILOS.oro.fuente = "600 76px Cormorant"; ESTILOS.oro.alto = 88;
+ESTILOS.oroGrande.fuente = "600 104px Cormorant"; ESTILOS.oroGrande.alto = 118;
+ESTILOS.cita.fuente = "italic 500 62px Cormorant"; ESTILOS.cita.alto = 74;
+ESTILOS.referencia.fuente = "500 28px Montserrat"; ESTILOS.referencia.alto = 64;
+SOMBRA_TEXTO = "rgba(0,0,0,0)";
+
+const IMAGENES = {};
+function cargarImagen(ruta) {
+  if (!IMAGENES[ruta]) {
+    IMAGENES[ruta] = new Promise(ok => { const im = new Image(); im.onload = () => ok(im); im.src = "../" + ruta; });
+  }
+  return IMAGENES[ruta];
+}
+const LISTAS = {};
+
+// --- planos de imagen -----------------------------------------------------
+function dibujarPlano(pl, t, alfa) {
+  const im = LISTAS[pl.imagen];
+  if (!im || alfa <= 0) return;
+  const k = suave((t - pl.inicio) / (pl.fin - pl.inicio + 0.8));
+  const [z0, z1] = pl.zoom || [1.0, 1.08];
+  const zoom = z0 + (z1 - z0) * k;
+  const [fx, fy] = pl.foco || [0.5, 0.5];
+  const base = Math.max(W / im.width, H / im.height);
+  const s = base * zoom;
+  const dw = im.width * s, dh = im.height * s;
+  // La cámara se acerca hacia el foco sin dejar bordes vacíos.
+  const x = limitar(W / 2 - fx * dw, W - dw, 0), y = limitar(H / 2 - fy * dh, H - dh, 0);
+  ctx.save();
+  ctx.globalAlpha = alfa;
+  ctx.translate(x, y); ctx.scale(s, s);
+  ctx.drawImage(im, 0, 0);
+  if (pl.cartel) dibujarCartel(pl.cartel, t);
+  ctx.restore();
+}
+// Texto pintado sobre un cartel de la ilustración (coordenadas de la imagen).
+function dibujarCartel(c, t) {
+  let actual = null, previo = null, desde = 0;
+  for (const [tc, txt] of c.textos) if (t >= tc) { previo = actual; actual = txt; desde = tc; }
+  if (!actual) return;
+  // Giro del cartel al cambiar de texto (se estrecha y vuelve a abrirse).
+  const giro = previo !== null ? limitar((t - desde) / 0.6) : 1;
+  const ancho = Math.abs(Math.cos(giro * Math.PI));
+  const texto = giro < 0.5 ? previo : actual;
+  ctx.save();
+  ctx.translate(c.x + c.w / 2, c.y + c.h / 2);
+  ctx.scale(Math.max(0.02, ancho), 1);
+  ctx.font = `700 ${c.h * 0.36}px Montserrat`;
+  ctx.letterSpacing = `${c.h * 0.03}px`;
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  // El texto se ajusta al ancho del cartel, con margen.
+  const ajuste = Math.min(1, (c.w * 0.8) / ctx.measureText(texto).width);
+  ctx.scale(ajuste, ajuste);
+  ctx.fillStyle = texto === "ABIERTO" ? "#3f6f4f" : "#7a2e22";
+  ctx.fillText(texto, 0, c.h * 0.03);
+  ctx.restore();
+}
+
+// --- tarjeta de texto -----------------------------------------------------
+function altoBloque(esc) {
+  return esc.lineas.reduce((s, l) => s + (ESTILOS[l.estilo] || ESTILOS.normal).alto, 0);
+}
+function dibujarTarjeta(esc, t) {
+  const alto = altoBloque(esc) + 90;
+  const y = (esc.y ?? 360) - alto / 2;
+  const entra = suave((t - esc.inicio) / 0.5), sale = 1 - suave((t - (esc.fin - 0.4)) / 0.4);
+  const a = entra * sale;
+  if (a <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = a;
+  ctx.shadowColor = "rgba(60,35,15,0.35)"; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10;
+  ctx.fillStyle = "rgba(251,244,230,0.93)";
+  ctx.beginPath(); ctx.roundRect(70, y, W - 140, alto, 30); ctx.fill();
+  ctx.shadowColor = "transparent";
+  ctx.strokeStyle = "rgba(163,68,45,0.3)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.roundRect(86, y + 16, W - 172, alto - 32, 22); ctx.stroke();
+  ctx.restore();
+}
+function dibujarInvitacion(inv, t) {
+  if (!inv) return;
+  const p = suave((t - inv.desde) / 0.6) * (1 - suave((t - inv.hasta + 0.5) / 0.5));
+  if (p <= 0) return;
+  ctx.save(); ctx.globalAlpha = p;
+  ctx.font = "500 26px Montserrat"; ctx.letterSpacing = "6px";
+  const w = ctx.measureText(inv.texto).width + 70;
+  ctx.fillStyle = "rgba(59,42,30,0.78)";
+  ctx.beginPath(); ctx.roundRect(540 - w / 2, 1470, w, 64, 32); ctx.fill();
+  ctx.fillStyle = "#fbf4e6"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(inv.texto, 540, 1503);
+  ctx.restore();
+}
+// Logo en tinta (cruz marrón y ondas terracota) para fondos claros.
+function logoTinta(cx, arriba, alto) {
+  const g = alto * 0.06;
+  ctx.fillStyle = TINTA;
+  ctx.fillRect(cx - g / 2, arriba, g, alto);
+  ctx.fillRect(cx - alto * 0.29, arriba + alto * 0.3 - g / 2, alto * 0.58, g);
+  ctx.strokeStyle = "#c27a2c"; ctx.lineWidth = g * 0.9; ctx.lineCap = "round";
+  for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(cx, arriba - alto * 0.02, alto * (0.12 + 0.12 * i), Math.PI * 1.25, Math.PI * 1.75); ctx.stroke(); }
+}
+function dibujarCierreCuento(esc, t) {
+  const p = salida((t - esc.inicio) / 0.8);
+  ctx.save(); ctx.globalAlpha = p;
+  ctx.fillStyle = "rgba(251,244,230,0.9)"; ctx.fillRect(0, 0, W, H);
+  logoTinta(540, 560, 200);
+  const linea = (txt, fuente, color, y, esp = 0) => { ctx.font = fuente; ctx.fillStyle = color; ctx.letterSpacing = `${esp}px`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(txt, 540, y); };
+  linea(esc.lema, "500 30px Montserrat", TERRACOTA, 860, 10);
+  linea(esc.nombre, "500 84px Cormorant", TINTA, 940);
+  ctx.strokeStyle = "rgba(163,68,45,0.5)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(440, 1000); ctx.lineTo(640, 1000); ctx.stroke();
+  esc.cta.forEach((l, i) => linea(l, "italic 500 62px Cormorant", TINTA, 1070 + i * 70));
+  ctx.restore();
+}
+
+// --- fotograma ------------------------------------------------------------
+iniciarPlantilla((guion, t) => {
+  const cfg = guion.cuento;
+  ctx.fillStyle = "#1b140e"; ctx.fillRect(0, 0, W, H);
+  // Plano actual y fundido con el anterior.
+  const planos = cfg.planos;
+  const i = Math.max(0, planos.findIndex(p => t >= p.inicio && t < p.fin + (p === planos[planos.length - 1] ? 99 : 0)));
+  const fundido = cfg.fundido ?? 0.9;
+  if (i > 0) dibujarPlano(planos[i - 1], t, 1);
+  dibujarPlano(planos[i], t, i > 0 ? suave((t - planos[i].inicio) / fundido) : 1);
+  const esc = escenaEn(guion, t);
+  if (esc.tipo === "cierre") return dibujarCierreCuento(esc, t);
+  dibujarTarjeta(esc, t);
+  dibujarEscenaTexto(esc, t);
+  dibujarInvitacion(cfg.invitacion, t);
+});
+
+// Precarga de las ilustraciones antes de dibujar.
+const cargarBase = window.cargar;
+window.cargar = async g => {
+  await cargarBase(g);
+  for (const pl of g.cuento.planos) LISTAS[pl.imagen] = await cargarImagen(pl.imagen);
+};
+</script>
+</body>
+</html>
