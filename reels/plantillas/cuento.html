@@ -56,6 +56,20 @@ function dibujarPlano(pl, t, alfa) {
   ctx.translate(x, y); ctx.scale(s, s);
   ctx.drawImage(im, 0, 0);
   if (pl.cartel) dibujarCartel(pl.cartel, t);
+  if (pl.velo) dibujarVelo(pl.velo, t);
+  ctx.restore();
+}
+// Velo oscuro que va cubriendo una zona de la ilustración (p. ej. unas
+// figuras que deben leerse como sombras que se alejan y se desvanecen).
+function dibujarVelo(v, t) {
+  const p = suave((t - v.desde) / (v.hasta - v.desde));
+  const cx = v.x + v.w / 2, cy = v.y + v.h / 2, r = Math.max(v.w, v.h) / 2;
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+  g.addColorStop(0, `rgba(${v.color},${v.inicial + (v.final - v.inicial) * p})`);
+  g.addColorStop(1, `rgba(${v.color},0)`);
+  ctx.save();
+  ctx.translate(cx, cy); ctx.scale(v.w / (2 * r), v.h / (2 * r)); ctx.translate(-cx, -cy);
+  ctx.fillStyle = g; ctx.fillRect(cx - r, cy - r, 2 * r, 2 * r);
   ctx.restore();
 }
 // Texto pintado sobre un cartel de la ilustración (coordenadas de la imagen).
@@ -103,7 +117,9 @@ function dibujarTarjeta(esc, t) {
 }
 function dibujarInvitacion(inv, t) {
   if (!inv) return;
-  const p = suave((t - inv.desde) / 0.6) * (1 - suave((t - inv.hasta + 0.5) / 0.5));
+  // Puede aparecer en varios tramos: "tramos": [[desde, hasta], ...].
+  const tramos = inv.tramos || [[inv.desde, inv.hasta]];
+  const p = Math.max(...tramos.map(([d, h]) => suave((t - d) / 0.6) * (1 - suave((t - h + 0.5) / 0.5))));
   if (p <= 0) return;
   ctx.save(); ctx.globalAlpha = p;
   ctx.font = "500 26px Montserrat"; ctx.letterSpacing = "6px";
